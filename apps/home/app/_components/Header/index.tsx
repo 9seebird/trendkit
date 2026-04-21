@@ -50,7 +50,7 @@ export default function Header() {
         {/* 로고 */}
         <Link href="/" style={{
           fontWeight: 900,
-          fontSize: "clamp(19px, 2.5vw, 28px)",
+          fontSize: "clamp(18px, 2.5vw, 24px)",
           color: "var(--text-primary)",
           textDecoration: "none",
           letterSpacing: "-0.5px",
