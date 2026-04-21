@@ -1,18 +1,26 @@
 // ─────────────────────────────────────────────────────
 // 홈페이지 (/)
-// 구성: Hero 섹션 + 서비스 미리보기 섹션
+// 구성:
+// 1) Hero 섹션
+// 2) 서비스 미리보기 섹션
 //
-// 도구 카드 수정: 아래 HERO_TOOLS 배열을 편집하세요.
-// 히어로 문구 수정: 코드 내 주석 위치를 찾아 편집하세요.
+// 이번 수정 반영 내용:
+// - "더 스마트하게" 기울임 제거
+// - Hero 우측 카드 3개 가로 길이 통일
+// - 카드 설명 텍스트를 slice 잘라내기 대신 CSS 말줄임 처리
+// - 기존 구조는 유지하면서 보기 좋게 정리
 // ─────────────────────────────────────────────────────
+
+import React from "react";
 import Link from "next/link";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import { URLS } from "@/lib/urls";
 
-// ── 히어로 우측에 표시되는 도구 미리보기 카드 데이터 ──
-// services/page.tsx 의 TOOLS 와 별개로 관리됩니다.
-// 홈에 노출할 도구만 여기에 넣으세요.
+// ─────────────────────────────────────────────────────
+// Hero 우측에 표시되는 도구 미리보기 카드 데이터
+// 홈에서만 보여줄 목록입니다.
+// ─────────────────────────────────────────────────────
 const HERO_TOOLS = [
   {
     icon: "📊",
@@ -21,7 +29,7 @@ const HERO_TOOLS = [
     desc: "여러 엑셀 파일을 컬럼 기반으로 스마트하게 병합. 컬럼 매핑, 미리보기, 다운로드까지.",
     href: URLS.excel,
     status: "live" as const,
-    external: true, // 외부 서비스: 새 탭으로 이동
+    external: true,
   },
   {
     icon: "☁️",
@@ -47,12 +55,13 @@ export default function HomePage() {
   return (
     <>
       <Header />
+
       <main>
-        {/* ══════════════════════════════════════
+        {/* ─────────────────────────────────────────────
             HERO 섹션
-            ─ 문구 수정: 아래 h1, p 태그 안 텍스트 편집
-            ─ 배경 그라디언트: section style 의 background 편집
-            ══════════════════════════════════════ */}
+            - 왼쪽: 메인 문구 + 버튼
+            - 오른쪽: 도구 미리보기 카드
+           ───────────────────────────────────────────── */}
         <section
           style={{
             minHeight: "100vh",
@@ -65,7 +74,7 @@ export default function HomePage() {
             overflow: "hidden",
           }}
         >
-          {/* 배경 글로우 효과 (장식용) */}
+          {/* 배경 장식용 글로우 */}
           <div
             style={{
               position: "absolute",
@@ -89,12 +98,14 @@ export default function HomePage() {
               width: "100%",
             }}
           >
-            {/* ── 왼쪽: 히어로 텍스트 + CTA ── */}
+            {/* ── 왼쪽: Hero 텍스트 영역 ── */}
             <div>
-              {/* ── 상단 레이블 편집 ── */}
-              <span className="section-eyebrow">Productivity Tools</span>
+              {/* 상단 라벨 */}
+              <span className="section-eyebrow">PRODUCTIVITY TOOLS</span>
 
-              {/* ── 메인 헤드라인 편집 ── */}
+              {/* 메인 타이틀
+                  - 기존 em 태그 italic 때문에 "더 스마트하게"가 기울어졌던 부분 수정
+                  - span으로 바꿔서 색만 강조하고 기울임 제거 */}
               <h1
                 style={{
                   fontFamily: "var(--font-serif)",
@@ -107,14 +118,20 @@ export default function HomePage() {
               >
                 더 빠르게,
                 <br />
-                <em style={{ fontStyle: "italic", color: "var(--brand)" }}>
+                <span
+                  style={{
+                    fontStyle: "normal",
+                    color: "var(--brand)",
+                    display: "inline-block",
+                  }}
+                >
                   더 스마트하게
-                </em>
+                </span>
                 <br />
                 일하세요
               </h1>
 
-              {/* ── 서브 설명문 편집 ── */}
+              {/* 서브 설명문 */}
               <p
                 style={{
                   fontSize: "17px",
@@ -129,12 +146,18 @@ export default function HomePage() {
                 설치 없이 브라우저에서 바로 사용하세요.
               </p>
 
-              {/* CTA 버튼 그룹 */}
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                {/* 서비스 페이지로 내부 이동 (뒤로가기 지원) */}
+              {/* CTA 버튼 영역 */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  flexWrap: "wrap",
+                }}
+              >
                 <Link href="/services" className="btn btn-dark">
                   도구 둘러보기 →
                 </Link>
+
                 <Link href="/about" className="btn btn-outline">
                   소개 보기
                 </Link>
@@ -143,33 +166,37 @@ export default function HomePage() {
 
             {/* ── 오른쪽: 도구 미리보기 카드 목록 ── */}
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                width: "100%",
+              }}
             >
-              {HERO_TOOLS.map((tool, i) => (
+              {HERO_TOOLS.map((tool) => (
                 <div
                   key={tool.name}
                   style={{
                     background: "var(--bg-surface)",
                     border: "1px solid var(--border)",
                     borderRadius: "var(--radius-lg)",
-                    padding: "18px 22px",
+                    padding: "20px 24px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "14px",
+                    gap: "16px",
                     boxShadow: "var(--shadow-sm)",
-                    // 카드를 살짝 엇갈리게 배치해 깊이감 연출
-                    marginLeft: i === 1 ? "28px" : i === 2 ? "14px" : "0",
+                    width: "100%",
                     transition: "transform 0.25s, box-shadow 0.25s",
                   }}
                 >
-                  {/* 아이콘 */}
+                  {/* 아이콘 영역 */}
                   <div
                     style={{
-                      width: 42,
-                      height: 42,
-                      borderRadius: "10px",
+                      width: 52,
+                      height: 52,
+                      borderRadius: "14px",
                       background: tool.iconBg,
-                      fontSize: "20px",
+                      fontSize: "24px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -179,34 +206,46 @@ export default function HomePage() {
                     {tool.icon}
                   </div>
 
-                  {/* 이름 + 짧은 설명 */}
-                  <div style={{ flex: 1 }}>
+                  {/* 텍스트 영역
+                      minWidth: 0 을 넣어야 text-overflow가 정상 동작합니다. */}
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                    }}
+                  >
                     <div
                       style={{
-                        fontSize: "14px",
-                        fontWeight: 600,
+                        fontSize: "15px",
+                        fontWeight: 700,
                         color: "var(--text-primary)",
+                        marginBottom: "4px",
                       }}
                     >
                       {tool.name}
                     </div>
+
+                    {/* 기존 slice(0, 32) 제거
+                        카드 너비 기준으로 자연스럽게 말줄임 처리 */}
                     <div
                       style={{
-                        fontSize: "12px",
+                        fontSize: "13px",
                         color: "var(--text-muted)",
-                        marginTop: "2px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
-                      {tool.desc.slice(0, 32)}…
+                      {tool.desc}
                     </div>
                   </div>
 
                   {/* 상태 뱃지 */}
                   <span
                     style={{
-                      fontSize: "11px",
+                      fontSize: "12px",
                       fontWeight: 700,
-                      padding: "3px 10px",
+                      padding: "6px 12px",
                       borderRadius: "var(--radius-full)",
                       background:
                         tool.status === "live"
@@ -216,6 +255,7 @@ export default function HomePage() {
                         tool.status === "live"
                           ? "var(--status-live-text)"
                           : "var(--status-soon-text)",
+                      flexShrink: 0,
                     }}
                   >
                     {tool.status === "live" ? "Live" : "Soon"}
@@ -226,11 +266,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════
+        {/* ─────────────────────────────────────────────
             서비스 미리보기 섹션
-            ─ 카드 클릭 시 /services 로 이동하도록
-              "모든 서비스 보기" 버튼 연결
-            ══════════════════════════════════════ */}
+           ───────────────────────────────────────────── */}
         <section
           className="section-pad"
           style={{ background: "var(--bg-page)" }}
@@ -245,7 +283,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* 도구 카드 그리드 */}
+            {/* 서비스 카드 그리드 */}
             <div
               style={{
                 display: "grid",
@@ -290,7 +328,7 @@ export default function HomePage() {
                       {tool.icon}
                     </div>
 
-                    {/* 이름 + 설명 */}
+                    {/* 제목 */}
                     <h3
                       style={{
                         fontSize: "17px",
@@ -301,6 +339,7 @@ export default function HomePage() {
                       {tool.name}
                     </h3>
 
+                    {/* 설명 */}
                     <p
                       style={{
                         fontSize: "14px",
@@ -312,7 +351,7 @@ export default function HomePage() {
                       {tool.desc}
                     </p>
 
-                    {/* 하단: 상태 뱃지 + 화살표 */}
+                    {/* 하단 영역: 상태 + 화살표 */}
                     <div
                       style={{
                         display: "flex",
@@ -376,7 +415,7 @@ export default function HomePage() {
               })}
             </div>
 
-            {/* 서비스 페이지 이동 버튼 (내부 라우팅 → 뒤로가기 지원) */}
+            {/* 서비스 전체 보기 버튼 */}
             <div style={{ textAlign: "center", marginTop: "40px" }}>
               <Link href="/services" className="btn btn-outline">
                 모든 서비스 보기
@@ -385,6 +424,7 @@ export default function HomePage() {
           </div>
         </section>
       </main>
+
       <Footer />
     </>
   );
