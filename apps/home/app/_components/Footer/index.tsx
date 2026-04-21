@@ -125,7 +125,6 @@ export default function Footer() {
           <p style={{ fontSize: "13px" }}>
             © {COPYRIGHT.year} {COPYRIGHT.name}. All rights reserved.
           </p>
-          <p style={{ fontSize: "13px" }}>{COPYRIGHT.email}</p>
         </div>
       </div>
     </footer>
