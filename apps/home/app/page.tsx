@@ -21,7 +21,7 @@ const HERO_TOOLS = [
     desc: "여러 엑셀 파일을 컬럼 기반으로 스마트하게 병합. 컬럼 매핑, 미리보기, 다운로드까지.",
     href: URLS.excel,
     status: "live" as const,
-    external: true,  // 외부 서비스: 새 탭으로 이동
+    external: true, // 외부 서비스: 새 탭으로 이동
   },
   {
     icon: "☁️",
@@ -48,7 +48,6 @@ export default function HomePage() {
     <>
       <Header />
       <main>
-
         {/* ══════════════════════════════════════
             HERO 섹션
             ─ 문구 수정: 아래 h1, p 태그 안 텍스트 편집
@@ -106,7 +105,8 @@ export default function HomePage() {
                   marginBottom: "24px",
                 }}
               >
-                더 빠르게,<br />
+                더 빠르게,
+                <br />
                 <em style={{ fontStyle: "italic", color: "var(--brand)" }}>
                   더 스마트하게
                 </em>
@@ -124,7 +124,8 @@ export default function HomePage() {
                   maxWidth: "400px",
                 }}
               >
-                반복적인 업무를 자동화하는 웹 도구 모음.<br />
+                반복적인 업무를 자동화하는 웹 도구 모음.
+                <br />
                 설치 없이 브라우저에서 바로 사용하세요.
               </p>
 
@@ -141,7 +142,9 @@ export default function HomePage() {
             </div>
 
             {/* ── 오른쪽: 도구 미리보기 카드 목록 ── */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
               {HERO_TOOLS.map((tool, i) => (
                 <div
                   key={tool.name}
@@ -228,9 +231,11 @@ export default function HomePage() {
             ─ 카드 클릭 시 /services 로 이동하도록
               "모든 서비스 보기" 버튼 연결
             ══════════════════════════════════════ */}
-        <section className="section-pad" style={{ background: "var(--bg-page)" }}>
+        <section
+          className="section-pad"
+          style={{ background: "var(--bg-page)" }}
+        >
           <div className="container-main">
-
             {/* 섹션 헤더 */}
             <div style={{ textAlign: "center", marginBottom: "52px" }}>
               <span className="section-eyebrow">Our Services</span>
@@ -250,35 +255,24 @@ export default function HomePage() {
             >
               {HERO_TOOLS.map((tool) => {
                 const isLive = tool.status === "live";
-                // live 도구: Link (외부 서비스면 새 탭 / 내부면 페이지 이동)
-                // soon 도구: div (클릭 불가)
-                const Tag = isLive ? Link : "div";
 
-                return (
-                  <Tag
-                    key={tool.name}
-                    {...(isLive
-                      ? {
-                          href: tool.href,
-                          target: tool.external ? "_blank" : undefined,
-                          rel: tool.external ? "noopener noreferrer" : undefined,
-                        }
-                      : {})}
-                    style={{
-                      background: "var(--bg-surface)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "var(--radius-lg)",
-                      padding: "28px",
-                      textDecoration: "none",
-                      color: "inherit",
-                      display: "flex",
-                      flexDirection: "column",
-                      opacity: isLive ? 1 : 0.65,
-                      cursor: isLive ? "pointer" : "default",
-                      transition:
-                        "transform 0.25s, box-shadow 0.25s, border-color 0.25s",
-                    }}
-                  >
+                const cardStyle: React.CSSProperties = {
+                  background: "var(--bg-surface)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--radius-lg)",
+                  padding: "28px",
+                  textDecoration: "none",
+                  color: "inherit",
+                  display: "flex",
+                  flexDirection: "column",
+                  opacity: isLive ? 1 : 0.65,
+                  cursor: isLive ? "pointer" : "default",
+                  transition:
+                    "transform 0.25s, box-shadow 0.25s, border-color 0.25s",
+                };
+
+                const cardContent = (
+                  <>
                     {/* 아이콘 */}
                     <div
                       style={{
@@ -306,6 +300,7 @@ export default function HomePage() {
                     >
                       {tool.name}
                     </h3>
+
                     <p
                       style={{
                         fontSize: "14px",
@@ -344,13 +339,39 @@ export default function HomePage() {
                       >
                         {isLive ? "Live" : "Coming Soon"}
                       </span>
+
                       {isLive && (
-                        <span style={{ color: "var(--text-muted)", fontSize: "18px" }}>
+                        <span
+                          style={{
+                            color: "var(--text-muted)",
+                            fontSize: "18px",
+                          }}
+                        >
                           →
                         </span>
                       )}
                     </div>
-                  </Tag>
+                  </>
+                );
+
+                if (isLive) {
+                  return (
+                    <Link
+                      key={tool.name}
+                      href={tool.href}
+                      target={tool.external ? "_blank" : undefined}
+                      rel={tool.external ? "noopener noreferrer" : undefined}
+                      style={cardStyle}
+                    >
+                      {cardContent}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key={tool.name} style={cardStyle}>
+                    {cardContent}
+                  </div>
                 );
               })}
             </div>
@@ -363,7 +384,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
       </main>
       <Footer />
     </>
