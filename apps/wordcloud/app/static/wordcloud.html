@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>워드클라우드 생성기 + CSV</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+          "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 16px;
+        position: relative;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      .back-home {
+        background: #111827;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        transition: background 0.2s ease;
+      }
+
+      .back-home:hover {
+        background: #1f2937;
+      }
+
+      .card {
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      label {
+        font-weight: 600;
+        display: block;
+        margin-top: 12px;
+      }
+
+      input {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        margin-top: 6px;
+      }
+
+      button {
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 10px;
+        background: #111827;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 14px;
+      }
+
+      button.secondary {
+        background: #374151;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      a.btn {
+        display: inline-block;
+        text-decoration: none;
+        background: #111827;
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background 0.2s ease, transform 0.05s ease;
+      }
+
+      a.btn:hover {
+        background: #1f2937;
+      }
+
+      a.btn:active {
+        transform: translateY(1px);
+      }
+
+      a.btn.secondary {
+        background: #374151;
+      }
+
+      #result {
+        margin-top: 24px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+      }
+
+      .row > div {
+        min-width: 0;
+      }
+
+      .hint {
+        color: #6b7280;
+        font-size: 14px;
+        margin-top: 6px;
+      }
+
+      .footer {
+        margin-top: 24px;
+        color: #6b7280;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .right-actions {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        justify-content: flex-end;
+      }
+
+      /* 상위 토큰 표시 영역 */
+      .token-details {
+        margin-top: 14px;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 14px;
+      }
+
+      .token-summary {
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 18px;
+        list-style: none;
+        user-select: none;
+      }
+
+      .token-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .token-summary::before {
+        content: "▼ ";
+        font-size: 14px;
+      }
+
+      .token-details[open] .token-summary::before {
+        content: "▲ ";
+      }
+
+      .token-tag-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .token-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #2563eb;
+        color: #ffffff;
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.18);
+        white-space: nowrap;
+      }
+
+      .token-count {
+        font-size: 13px;
+        font-weight: 600;
+        opacity: 0.92;
+      }
+
+      @media (max-width: 640px) {
+        input,
+        button {
+          width: 100%;
+        }
+
+        .right-actions {
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: stretch;
+        }
+
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .token-tag-wrap {
+          gap: 8px;
+        }
+
+        .token-tag {
+          padding: 9px 12px;
+          font-size: 13px;
+        }
+      }
+    </style>
+
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-J0SPX7FT4J"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-J0SPX7FT4J");
+    </script>
+  </head>
+  <body>
+    <div class="page-header">
+      <h1>워드클라우드 생성기</h1>
+      <a href="/" class="back-home">메인으로</a>
+    </div>
+
+    <p class="hint">
+      검색어를 입력하면 관련 뉴스(제목/요약)를 수집해 워드클라우드를 만듭니다.
+      빈도 CSV와 기사 CSV도 다운로드할 수 있습니다.
+    </p>
+
+    <div class="card">
+      <label for="query">검색 키워드</label>
+      <input id="query" placeholder="예: 여행, 행복, 국내여행" />
+
+      <div class="row">
+        <div>
+          <label for="width">가로(px)</label>
+          <input id="width" type="number" value="1200" min="400" max="3000" />
+        </div>
+        <div>
+          <label for="height">세로(px)</label>
+          <input id="height" type="number" value="800" min="300" max="3000" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="max_items">기사 개수 (제목/요약)</label>
+          <input id="max_items" type="number" value="50" min="10" max="200" />
+        </div>
+        <div>
+          <label for="extra_stopwords">추가 불용어(쉼표로 구분)</label>
+          <input
+            id="extra_stopwords"
+            placeholder="예: 기자, 사진, 오늘, 단독"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <button id="runBtn">워드클라우드 생성</button>
+        </div>
+
+        <div class="right-actions">
+          <button id="dlFreq" class="secondary">빈도 CSV 다운로드</button>
+          <button id="dlArticles" class="secondary">기사 CSV 다운로드</button>
+        </div>
+      </div>
+
+      <div id="result"></div>
+    </div>
+
+    <div class="footer">
+      ※ 결과가 마음에 들지 않으면 추가 불용어를 넣고 다시 생성해 보세요.
+    </div>
+
+    <script>
+      const el = (id) => document.getElementById(id);
+      const btn = el("runBtn");
+      const resultDiv = el("result");
+      const dlFreq = el("dlFreq");
+      const dlArticles = el("dlArticles");
+
+      function getInputs() {
+        return {
+          query: el("query").value.trim(),
+          width: el("width").value,
+          height: el("height").value,
+          max_items: el("max_items").value,
+          extra_stopwords: el("extra_stopwords").value.trim(),
+        };
+      }
+
+      btn.addEventListener("click", async () => {
+        const { query, width, height, max_items, extra_stopwords } =
+          getInputs();
+
+        if (!query) {
+          alert("검색어를 입력해 주세요.");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "생성 중...";
+        resultDiv.innerHTML = "";
+
+        try {
+          const params = new URLSearchParams({
+            query,
+            width,
+            height,
+            max_items,
+          });
+
+          if (extra_stopwords) {
+            params.set("extra_stopwords", extra_stopwords);
+          }
+
+          const res = await fetch("/api/wordcloud?" + params.toString());
+          const data = await res.json();
+
+          if (!data.ok) {
+            resultDiv.innerHTML = `
+              <p style="color:#dc2626; font-weight:600;">
+                ${data.error || "오류가 발생했습니다."}
+              </p>
+            `;
+          } else {
+            const imgUrl = data.image_data;
+
+            let topRows = "";
+            (data.top_freq || []).slice(0, 20).forEach((row) => {
+              topRows += `
+                <span class="token-tag">
+                  <span class="token-name">${row.token}</span>
+                  <span class="token-count">${row.count}</span>
+                </span>
+              `;
+            });
+
+            resultDiv.innerHTML = `
+              <p class="hint">토큰 수: ${data.count_tokens.toLocaleString()}</p>
+
+              <img
+                src="${imgUrl}"
+                alt="워드클라우드"
+                style="max-width:100%; border-radius:12px; border:1px solid #e5e7eb;"
+              />
+
+              <div style="margin-top:14px; text-align:center;">
+                <a
+                  href="${imgUrl}"
+                  download="${data.query || "wordcloud"}_${Date.now()}.png"
+                  class="btn secondary"
+                  style="display:inline-block; text-decoration:none;"
+                >
+                  이미지 다운로드
+                </a>
+              </div>
+
+              <details class="token-details">
+                <summary class="token-summary">상위 20개 토큰 보기</summary>
+                <div class="token-tag-wrap">
+                  ${topRows}
+                </div>
+              </details>
+            `;
+          }
+        } catch (err) {
+          console.error(err);
+          resultDiv.innerHTML = `
+            <p style="color:#dc2626; font-weight:600;">
+              요청 중 오류가 발생했습니다.
+            </p>
+          `;
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "워드클라우드 생성";
+        }
+      });
+
+      dlFreq.addEventListener("click", () => {
+        const { query, max_items, extra_stopwords } = getInputs();
+
+        if (!query) {
+          alert("검색어를 먼저 입력하세요.");
+          return;
+        }
+
+        const params = new URLSearchParams({ query, max_items });
+
+        if (extra_stopwords) {
+          params.set("extra_stopwords", extra_stopwords);
+        }
+
+        window.location.href =
+          "/api/export/frequencies.csv?" + params.toString();
+      });
+
+      dlArticles.addEventListener("click", () => {
+        const { query, max_items } = getInputs();
+
+        if (!query) {
+          alert("검색어를 먼저 입력하세요.");
+          return;
+        }
+
+        const params = new URLSearchParams({ query, max_items });
+        window.location.href = "/api/export/articles.csv?" + params.toString();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <!-- 파비콘 설정 -->
+    <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/static/favicon-192x192.png"
+    />
+
+    <meta charset="UTF-8" />
+    <title>오늘의 뉴스 키워드</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Chart.js 로딩 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      /* =========================
+         전역 색상/레이아웃 변수 정의
+         ========================= */
+      :root {
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --accent: #2563eb;
+        --accent-ghost: #e7efff;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --radius: 18px;
+        --gap: 20px;
+      }
+
+      /* 다크 모드 자동 대응 */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0b1220;
+          --card: #0f172a;
+          --text: #e5e7eb;
+          --muted: #9ca3af;
+          --border: #1f2937;
+          --accent-ghost: rgba(37, 99, 235, 0.18);
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      /* 기본 레이아웃 */
+      body {
+        margin: 0;
+        font-family: "Nanum Gothic", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1180px;
+        margin: 40px auto;
+        padding: 0 22px;
+      }
+
+      /* 상단 타이틀 영역 */
+      .page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--gap);
+      }
+
+      .page-title {
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .badge-today {
+        background: var(--accent-ghost);
+        color: var(--accent);
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+
+      /* 600px 미만 반응형 */
+      @media (max-width: 600px) {
+        .page-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .page-head .btn {
+          align-self: flex-end;
+          margin-top: -30px;
+        }
+        .page-title {
+          font-size: 24px;
+        }
+      }
+
+      /* 480px 이하 반응형 */
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+        .page-title {
+          font-size: 22px;
+        }
+        .page-head .btn {
+          margin-top: -28px;
+          padding: 8px 12px;
+          font-size: 13px;
+        }
+        #statusText {
+          font-size: 14px;
+        }
+        .rank-list {
+          padding-left: 10px;
+        }
+      }
+
+      /* 카드 스타일 */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+
+      /* 버튼 스타일 */
+      .btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.05s ease, filter 0.2s ease;
+      }
+      .btn:hover {
+        filter: brightness(1.05);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* 2열 그리드 */
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: var(--gap);
+      }
+
+      /* 리스트/배지 */
+      .rank-list {
+        margin: 0;
+        padding: 0 0 0 20px;
+        columns: 2;
+        column-gap: 40px;
+      }
+      .rank-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 2px 0;
+        gap: 8px;
+      }
+      .rank-list li span {
+        font-weight: 500;
+        min-width: 0;
+        flex-shrink: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .count-badge {
+        background: var(--accent-ghost);
+        color: var(--accent);
+        border-radius: 999px;
+        padding: 0 8px;
+        font-size: 12px;
+        font-weight: 800;
+        min-width: 28px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      /* 차트 영역 */
+      .chart-wrap {
+        position: relative;
+        width: 100%;
+        min-height: 560px;
+      }
+
+      /* 900px 이하 반응형 */
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .rank-list {
+          columns: 1;
+          column-gap: 0;
+          padding-left: 20px;
+        }
+        .chart-wrap {
+          min-height: 420px;
+        }
+      }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-J0SPX7FT4J"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-J0SPX7FT4J");
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- 페이지 헤더 -->
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">
+            오늘의 뉴스 키워드 <span class="badge-today">오늘</span>
+          </h1>
+        </div>
+        <a href="/" class="btn">메인으로</a>
+      </div>
+
+      <!-- 상태/버튼 카드 -->
+      <div class="card">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+          "
+        >
+          <div id="statusText" style="flex-shrink: 0">
+            데이터를 불러오는 중...
+          </div>
+          <button class="btn" id="reloadBtn">새로고침</button>
+        </div>
+        <p style="color: var(--muted); font-size: 14px; margin-top: 10px">
+          Google 뉴스 최신 기사(제목·요약) 기준으로 형태소 분석 후 상위 키워드를
+          표시합니다. <br />
+          버튼 클릭 시 더 많은 기사(최대 600건)를 반영하여 갱신합니다. 한번에
+          50건씩 증가합니다.
+        </p>
+      </div>
+
+      <!-- 리스트/차트 그리드 -->
+      <div class="grid" style="margin-top: 20px">
+        <div class="card">
+          <h3 style="margin: 0 0 10px 0">상위 키워드 Top 50</h3>
+          <ol class="rank-list" id="keywordList"></ol>
+        </div>
+
+        <div class="card">
+          <h3 style="margin: 0 0 10px 0">상위 20개 키워드 빈도</h3>
+          <div class="chart-wrap">
+            <canvas id="trendChart"></canvas>
+          </div>
+          <p style="color: var(--muted); font-size: 12px; text-align: center">
+            너무 긴 키워드는 축에서 생략될 수 있습니다.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // =============================
+      // 설정: 기본/증가폭/상한
+      // =============================
+      const API_URL = "/api/trends";
+      const BASE_LIMIT = 300; // 시작값
+      const STEP = 50; // 클릭 시 증가폭
+      const MAX_LIMIT = 600; // 서버 상한과 맞춤
+
+      // DOM
+      const statusEl = document.getElementById("statusText");
+      const reloadBtn = document.getElementById("reloadBtn");
+      const listEl = document.getElementById("keywordList");
+      const chartEl = document.getElementById("trendChart");
+      let chartInstance = null;
+
+      // 현재 limit을 localStorage로 유지(새 탭/새로고침에도 기억)
+      let currentLimit = parseInt(
+        localStorage.getItem("trendLimit") || BASE_LIMIT,
+        10
+      );
+      currentLimit = isNaN(currentLimit)
+        ? BASE_LIMIT
+        : Math.min(currentLimit, MAX_LIMIT);
+
+      // 버튼 라벨: 단순화
+      function syncButtonLabel() {
+        reloadBtn.textContent = "새로고침";
+      }
+      syncButtonLabel();
+
+      // 차트 높이 자동 조절
+      function setChartDynamicHeight(wrapperEl, barsCount) {
+        const perBar = 28,
+          padding = 140,
+          baseMin = 560;
+        const h = Math.max(baseMin, barsCount * perBar + padding);
+        wrapperEl.style.minHeight = `${h}px`;
+      }
+
+      // 핵심 로더: force=true면 서버 캐시 무시(_t=force)
+      async function loadTodayTrends(force = false, limit = currentLimit) {
+        const url = force
+          ? `${API_URL}?limit=${limit}&_t=force`
+          : `${API_URL}?limit=${limit}`;
+
+        reloadBtn.disabled = true;
+        statusEl.textContent = "데이터를 불러오는 중...";
+        listEl.innerHTML = "";
+        if (chartInstance) {
+          chartInstance.destroy();
+          chartInstance = null;
+        }
+
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`서버 응답 오류 (${res.status})`);
+          const data = await res.json();
+          if (!data || data.ok !== true)
+            throw new Error((data && data.error) || "데이터 형식 오류");
+
+          const itemsCount =
+            typeof data.items_count === "number" ? data.items_count : 0;
+          const top50 = Array.isArray(data.top50) ? data.top50 : [];
+          const labelsAll = top50.map((r) => r.token);
+          const countsAll = top50.map((r) => r.count);
+
+          if (labelsAll.length === 0) {
+            statusEl.textContent = "관련 키워드가 없습니다.";
+            return;
+          }
+
+          // 상태 문구: 간단하게 ‘기사 N건 기준’만 표시
+          statusEl.innerHTML = `기사 <strong>${itemsCount.toLocaleString()}</strong>건 기준`;
+
+          // 리스트 렌더(Top 50)
+          const frag = document.createDocumentFragment();
+          for (let i = 0; i < Math.min(50, labelsAll.length); i++) {
+            const li = document.createElement("li");
+            const name = document.createElement("span");
+            name.textContent = labelsAll[i];
+            const badge = document.createElement("span");
+            badge.className = "count-badge";
+            badge.textContent = countsAll[i];
+            li.append(name, badge);
+            frag.appendChild(li);
+          }
+          listEl.appendChild(frag);
+
+          // 차트 렌더(상위 20)
+          const ctx = chartEl.getContext("2d");
+          const labels = labelsAll.slice(0, 20);
+          const counts = countsAll.slice(0, 20);
+          const gradient = ctx.createLinearGradient(0, 0, chartEl.width, 0);
+          gradient.addColorStop(0, "rgba(37, 99, 235, 0.85)");
+          gradient.addColorStop(1, "rgba(99, 161, 255, 0.85)");
+          const maxVal = counts.length ? Math.max(...counts) : 1;
+
+          setChartDynamicHeight(chartEl.parentElement, labels.length);
+
+          chartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: "빈도수",
+                  data: counts,
+                  backgroundColor: gradient,
+                  borderRadius: 10,
+                  barThickness: 18,
+                  borderWidth: 0,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: "rgba(17,24,39,.9)",
+                  titleFont: { weight: "700" },
+                  bodyFont: { weight: "600" },
+                  displayColors: false,
+                  callbacks: { label: (ctx) => ` 빈도수: ${ctx.parsed.x}` },
+                },
+              },
+              layout: { padding: { right: 10, left: 10 } },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  suggestedMax: Math.ceil(maxVal * 1.1),
+                  grid: { color: "rgba(0,0,0,0.06)" },
+                  ticks: { font: { size: 12 } },
+                },
+                y: {
+                  grid: { display: false },
+                  ticks: { font: { size: 12, weight: "700" } },
+                },
+              },
+              animation: { duration: 600, easing: "easeOutQuart" },
+            },
+          });
+
+          // 필요 시 디버그는 콘솔로만
+          // console.log({ limit_used: data.limit_used, cached: data.cached, force: data.force });
+        } catch (err) {
+          statusEl.textContent = `에러: ${err.message}`;
+        } finally {
+          reloadBtn.disabled = false;
+        }
+      }
+
+      // 최초 로드
+      loadTodayTrends(false, currentLimit);
+
+      // 새로고침: limit STEP 증가 + 강제 새로고침
+      reloadBtn.addEventListener("click", () => {
+        currentLimit = Math.min(currentLimit + STEP, MAX_LIMIT);
+        localStorage.setItem("trendLimit", String(currentLimit));
+        loadTodayTrends(true, currentLimit);
+      });
+
+      // 오늘 날짜 yyyy-MM-dd
+      document.querySelector(".badge-today").textContent = new Date()
+        .toISOString()
+        .slice(0, 10);
+
+      // 반응형 보정(기존 유지)
+      const rankListEl = document.getElementById("keywordList");
+      let isMobileLayout = window.innerWidth <= 900;
+      function handleResize() {
+        const w = window.innerWidth;
+        if (w > 900 && isMobileLayout) {
+          rankListEl.style.columns = "2";
+          rankListEl.style.columnGap = "40px";
+          rankListEl.style.paddingLeft = "20px";
+          isMobileLayout = false;
+        } else if (w <= 900 && !isMobileLayout) {
+          isMobileLayout = true;
+        }
+      }
+      window.addEventListener("resize", handleResize);
+    </script>
+  </body>
+</html>

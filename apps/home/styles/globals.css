@@ -1,0 +1,234 @@
+/* ============================================================
+   apps/home/styles/globals.css
+   ─────────────────────────────────────────────────────────
+   ★ 이 파일이 전체 디자인 시스템의 단일 소스입니다.
+   ─ 색상, 폰트, 간격, 반경, 그림자 등 모든 디자인 토큰은
+     여기서만 정의하고, 각 컴포넌트는 var(--...) 로 참조하세요.
+   ─ 값을 바꾸면 전체 사이트에 즉시 반영됩니다.
+   ============================================================ */
+
+/* ── Tailwind CSS 베이스 ── */
+@import "tailwindcss";
+
+/* ── 웹폰트: Google Fonts (DM Sans) ── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+
+/* ══════════════════════════════════════════════
+   1. 디자인 토큰 (라이트 모드 기본값)
+   ══════════════════════════════════════════════ */
+:root {
+
+  /* ── 배경색 ──────────────────────────────── */
+  --bg-page:       #f5f4f0;   /* 페이지 전체 배경 */
+  --bg-surface:    #ffffff;   /* 카드·패널 배경   */
+  --bg-muted:      #f0ede8;   /* 구분용 흐린 배경 */
+
+  /* ── 텍스트색 ─────────────────────────────── */
+  --text-primary:   #1a1a1a;  /* 본문 주요 텍스트  */
+  --text-secondary: #555555;  /* 부제·설명 텍스트  */
+  --text-muted:     #999999;  /* 날짜·힌트 등 약한 텍스트 */
+  --text-inverted:  #ffffff;  /* 어두운 배경 위 텍스트 */
+
+  /* ── 브랜드 컬러 ──────────────────────────── */
+  --brand:          #2563eb;  /* 주요 강조 색 */
+  --brand-light:    #dbeafe;  /* 뱃지·태그 배경 */
+  --brand-dark:     #1d4ed8;  /* 호버 시 진한 브랜드 */
+
+  /* ── 보더 ─────────────────────────────────── */
+  --border:         #e4e2dc;  /* 일반 선    */
+  --border-strong:  #c8c5bd;  /* 강조 선    */
+
+  /* ── 상태 색 (Live / Coming Soon) ──────────── */
+  --status-live-bg:   #dcfce7;  /* 라이브 뱃지 배경 */
+  --status-live-text: #15803d;  /* 라이브 뱃지 텍스트 */
+  --status-soon-bg:   #f1f5f9;  /* 예정 뱃지 배경 */
+  --status-soon-text: #94a3b8;  /* 예정 뱃지 텍스트 */
+
+  /* ── 간격 스케일 (8px 기준) ────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* ── 모서리 반경 ───────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* ── 그림자 ────────────────────────────────── */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.07);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+
+  /* ── 네비 높이 ─────────────────────────────── */
+  --nav-height: 84px;   /* Header 높이 변경 시 여기만 수정 */
+
+  /* ── 폰트 패밀리 ───────────────────────────── */
+  --font-sans:  'DM Sans', sans-serif;
+  --font-serif: 'DM Sans', sans-serif;  /* 필요 시 세리프 폰트로 교체 */
+}
+
+
+/* ══════════════════════════════════════════════
+   2. 다크모드 토큰 재정의
+   ══════════════════════════════════════════════ */
+/* <html class="dark"> 를 추가하면 다크모드로 전환됩니다.
+   (DarkModeToggle 컴포넌트가 이 클래스를 토글합니다) */
+.dark {
+  --bg-page:        #0f0f0f;
+  --bg-surface:     #1a1a1a;
+  --bg-muted:       #111111;
+  --text-primary:   #f5f5f5;
+  --text-secondary: #aaaaaa;
+  --text-muted:     #666666;
+  --border:         #2a2a2a;
+  --border-strong:  #3a3a3a;
+}
+
+
+/* ══════════════════════════════════════════════
+   3. 기본 리셋
+   ══════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* 앵커 이동 시 부드러운 스크롤 */
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased; /* macOS 폰트 렌더링 최적화 */
+}
+
+
+/* ══════════════════════════════════════════════
+   4. 공통 레이아웃 유틸 클래스
+   ══════════════════════════════════════════════ */
+
+/* 페이지 최대 너비 + 좌우 여백 */
+.container-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-12);
+}
+
+/* 섹션 상하 패딩 */
+.section-pad {
+  padding: var(--space-24) var(--space-12);
+}
+
+
+/* ══════════════════════════════════════════════
+   5. 공통 섹션 헤더 패턴
+   ── 사용 예:
+      <span class="section-eyebrow">About</span>
+      <h2 class="section-title">제목</h2>
+      <p class="section-desc">설명문</p>
+   ══════════════════════════════════════════════ */
+
+/* 섹션 위 작은 레이블 (예: "CONTACT", "SERVICE") */
+.section-eyebrow {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: var(--space-4);
+}
+
+/* 섹션 주 제목 */
+.section-title {
+  font-family: var(--font-sans);
+  font-size: clamp(28px, 4vw, 44px); /* 반응형 폰트 크기 */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+/* 섹션 설명 텍스트 */
+.section-desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 480px;
+  line-height: 1.75;
+}
+
+
+/* ══════════════════════════════════════════════
+   6. 공통 버튼 스타일
+   ── 사용 예:
+      <button class="btn btn-dark">제출</button>
+      <a class="btn btn-outline" href="/about">보기</a>
+   ══════════════════════════════════════════════ */
+
+/* 버튼 베이스 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 11px 24px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.btn:hover {
+  transform: translateY(-1px); /* 호버 시 살짝 떠오르는 효과 */
+}
+
+/* 어두운 배경 버튼 (주요 CTA) */
+.btn-dark {
+  background: var(--text-primary);
+  color: var(--text-inverted);
+  box-shadow: var(--shadow-sm);
+}
+.btn-dark:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* 외곽선 버튼 (보조 CTA) */
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--text-primary);
+}
+
+
+/* ══════════════════════════════════════════════
+   7. 반응형 breakpoint
+   ══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* 모바일: 좌우 여백 축소 */
+  .container-main {
+    padding: 0 var(--space-6);
+  }
+
+  /* 모바일: 섹션 상하 패딩 축소 */
+  .section-pad {
+    padding: var(--space-16) var(--space-6);
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "9seebird",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/home",
+    "apps/excel-merger",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:home": "npm run dev --workspace=apps/home",
+    "dev:excel": "npm run dev --workspace=apps/excel-merger",
+    "dev:wordcloud": "cd apps/wordcloud && .\\.venv\\Scripts\\python -m uvicorn app.main:app --reload --port 8002",
+    "dev:keywords": "cd apps/trendkeyword && .\\.venv\\Scripts\\python -m uvicorn app.main:app --reload --port 8003",
+    "build:home": "npm run build --workspace=apps/home",
+    "build:excel": "npm run build --workspace=apps/excel-merger"
+  },
+  "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1"
+  }
+}
