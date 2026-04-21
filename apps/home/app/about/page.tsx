@@ -39,7 +39,7 @@ const VISION_ITEMS = [
 // ── 팀 소개 편집 ──
 const TEAM = [
   {
-    name: "9seebird", // 이름
+    name: "trendkit", // 이름
     role: "Founder & Planner", // 역할
     bio: "6년간 웹 기획, 운영, 분석 업무를 하며 쌓인 반복 작업의 불편함을 해소하기 위해 사이트를 제작했습니다.",
   },

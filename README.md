@@ -1,4 +1,4 @@
-# 9seebird — 모노레포 구조
+# TrendKit — 모노레포 구조
 
 > GitHub → Vercel(프론트) + Render(백엔드) 배포 구조
 
@@ -61,20 +61,20 @@ apps/home/
 ## 🚀 배포 구조
 
 ### Vercel (프론트엔드)
-- `apps/home` → `9seebird.me`
-- `apps/excel-merger` → `excel.9seebird.me`
+- `apps/home` → `trendkit.app`
+- `apps/excel-merger` → `excel.trendkit.app`
 
 **Vercel 환경변수 설정 (각 프로젝트 대시보드에서)**
 ```
-NEXT_PUBLIC_URL_HOME=https://9seebird.me
-NEXT_PUBLIC_URL_EXCEL=https://excel.9seebird.me
-NEXT_PUBLIC_URL_WORDCLOUD=https://wordcloud.9seebird.me
-NEXT_PUBLIC_URL_TRENDS=https://keywords.9seebird.me
+NEXT_PUBLIC_URL_HOME=https://trendkit.app
+NEXT_PUBLIC_URL_EXCEL=https://excel.trendkit.app
+NEXT_PUBLIC_URL_WORDCLOUD=https://wordcloud.trendkit.app
+NEXT_PUBLIC_URL_TRENDS=https://keywords.trendkit.app
 ```
 
 ### Render (백엔드 Python)
-- `apps/trendkeyword` → `keywords.9seebird.me`
-- `apps/wordcloud` → `wordcloud.9seebird.me`
+- `apps/trendkeyword` → `keywords.trendkit.app`
+- `apps/wordcloud` → `wordcloud.trendkit.app`
 
 ---
 

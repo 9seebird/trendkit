@@ -10,7 +10,7 @@ export default function Home() {
         <div className="flex items-center gap-4">
           {/* 메인 홈으로 돌아가는 링크 */}
           <Link
-            href="https://9seebird.me"
+            href="https://trendkit.app"
             className="text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex items-center gap-1"
           >
             ← seebird

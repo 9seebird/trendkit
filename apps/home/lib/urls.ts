@@ -10,8 +10,8 @@
 // ─────────────────────────────────────────────────────
 
 export const URLS = {
-  home:      process.env.NEXT_PUBLIC_URL_HOME      ?? "https://9seebird.me",
-  excel:     process.env.NEXT_PUBLIC_URL_EXCEL     ?? "https://excel.9seebird.me",
-  wordcloud: process.env.NEXT_PUBLIC_URL_WORDCLOUD ?? "https://wordcloud.9seebird.me",
-  trends:    process.env.NEXT_PUBLIC_URL_TRENDS    ?? "https://keywords.9seebird.me",
+  home:      process.env.NEXT_PUBLIC_URL_HOME      ?? "https://trendkit.app",
+  excel:     process.env.NEXT_PUBLIC_URL_EXCEL     ?? "https://excel.trendkit.app",
+  wordcloud: process.env.NEXT_PUBLIC_URL_WORDCLOUD ?? "https://wordcloud.trendkit.app",
+  trends:    process.env.NEXT_PUBLIC_URL_TRENDS    ?? "https://keywords.trendkit.app",
 } as const;

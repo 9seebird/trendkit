@@ -34,7 +34,7 @@ const NOTICES = [
 // ── 회사 정보 ──
 const COMPANY_INFO = {
   address: "서울특별시",
-  email: "9seebird@9seebird.me",
+  email: "trendkit@trendkit.app",
   hours: "원격 운영 · 24/7",
 };
 
