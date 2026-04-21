@@ -50,7 +50,7 @@ export default function Header() {
         {/* 로고 */}
         <Link href="/" style={{
           fontWeight: 900,
-          fontSize: "clamp(19px, 2.5vw, 24px)",
+          fontSize: "clamp(19px, 2.5vw, 28px)",
           color: "var(--text-primary)",
           textDecoration: "none",
           letterSpacing: "-0.5px",
@@ -67,7 +67,7 @@ export default function Header() {
             const isActive = pathname.startsWith(item.href);
             return (
               <Link key={item.label} href={item.href} style={{
-                padding: "8px 16px",
+                padding: "8px 20px",
                 fontSize: "15px",
                 fontWeight: isActive ? 700 : 500,
                 color: isActive ? "var(--text-primary)" : "var(--text-secondary)",

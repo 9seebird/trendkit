@@ -55,7 +55,7 @@
   --shadow-md: 0 4px 16px rgba(0,0,0,0.07);
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
 
-  --nav-height: 64px;
+  --nav-height: 94px;
 
   /* layout.tsx의 next/font variable 사용 */
   --font-sans: var(--font-sans, 'DM Sans', sans-serif);
@@ -413,7 +413,7 @@ body {
    ───────────────────────────────────────── */
 @media (max-width: 768px) {
   :root {
-    --nav-height: 60px;
+    --nav-height: 80px;
   }
 
   .container-main {
