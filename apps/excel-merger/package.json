@@ -1,5 +1,5 @@
 {
-  "name": "@seebird/excel-merger",
+  "name": "@trendkit/excel-merger",
   "version": "0.1.0",
   "private": true,
   "scripts": {

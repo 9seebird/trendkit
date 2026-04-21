@@ -6,7 +6,7 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Smart Excel Merger | Seebird',
+  title: 'Smart Excel Merger | trendkit',
   description: '여러 개의 엑셀 파일을 하나로 간편하게 병합하세요.',
   icons: { icon: '/favicon.ico' },
 };

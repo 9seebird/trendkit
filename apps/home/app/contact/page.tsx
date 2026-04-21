@@ -18,7 +18,7 @@ const NOTICES = [
     tag: "공지",
     tagColor: "#dcfce7",
     tagText: "#15803d",
-    title: "Seebird 서비스 정식 오픈!",
+    title: "TrendKit 서비스 정식 오픈!",
     date: "2026.04.21",
   },
   {
