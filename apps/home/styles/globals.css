@@ -122,6 +122,12 @@ body {
   padding: 250px 40px 92px;
 }
 
+.desc {
+  white-space: pre-line;
+  word-break: keep-all;
+  line-height: 1.6;
+}
+
 /* ══════════════════════════════════════════
    4. 섹션 헤더
    ══════════════════════════════════════════ */

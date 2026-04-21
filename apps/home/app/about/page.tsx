@@ -5,14 +5,14 @@ import Footer from "../_components/Footer";
 const ABOUT_CONTENT = {
   headline: "반복 업무를 없애는\n도구를 만듭니다",
   subheadline: "About TrendKit",
-  intro: "실무에서 매일 마주치는 비효율적인 반복 작업을 없애기 위해 시작되었습니다.\nTrendKit을 통해 시간을 절약하세요.",
-  mission: "무거운 소프트웨어를 설치하거나 복잡한 설정 없이, 브라우저만 있으면 바로 사용할 수 있는\n웹 기반 도구들을 계속해서 만들어 나가겠습니다.",
+  intro: "실무에서 매일 마주치는 비효율적인 반복 작업을 위해 시작되었습니다.\nTrendKit을 통해 시간을 절약하세요.",
+  mission: "무거운 소프트웨어를 설치하거나 복잡한 설정 없이\n 브라우저만 있으면 바로 사용할 수 있는 웹 기반 도구입니다.",
 };
 
 const VISION_ITEMS = [
-  { icon: "🎯", title: "실용적인 도구", desc: "현장에서 실제로 필요한 기능만. 화려한 기능보다 바로 쓸 수 있는 도구를 만듭니다." },
-  { icon: "⚡", title: "빠른 실행",     desc: "설치 없이, 로그인 없이. 링크 하나로 접속해서 바로 사용하세요." },
-  { icon: "🔒", title: "데이터 보안",   desc: "업로드한 파일은 서버에 저장되지 않습니다. 모든 처리는 브라우저에서." },
+  { icon: "🎯", title: "실용적인 도구", desc: "화려한 기능보다 바로 쓸 수 있는 도구를 만듭니다." },
+  { icon: "⚡", title: "빠른 실행",     desc: "설치 없이, 로그인 없이, 바로 접속해서 바로 사용하세요." },
+  { icon: "🔒", title: "데이터 보안",   desc: "업로드한 파일은 서버에 저장되지 않습니다." },
 ];
 
 const STATS = [
@@ -49,7 +49,7 @@ export default function AboutPage() {
               marginBottom: "20px", whiteSpace: "pre-line",
             }}>{ABOUT_CONTENT.headline}</h1>
             <p style={{
-              fontSize: "clamp(15px, 2vw, 17px)",
+              fontSize: "clamp(13px, 2vw, 17px)",
               color: "var(--text-secondary)", lineHeight: 1.8,
               maxWidth: "560px", whiteSpace: "pre-line",
             }}>{ABOUT_CONTENT.intro}</p>
@@ -63,7 +63,7 @@ export default function AboutPage() {
               <div>
                 <span className="section-eyebrow">Our Mission</span>
                 <h2 className="section-title">왜 TrendKit 인가요?</h2>
-                <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: 1.8, whiteSpace: "pre-line" }}>
+                <p style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.8, whiteSpace: "pre-line" }}>
                   {ABOUT_CONTENT.mission}
                 </p>
               </div>
@@ -95,7 +95,7 @@ export default function AboutPage() {
                 <div key={item.title} className="card">
                   <div style={{ fontSize: "30px", marginBottom: "14px" }}>{item.icon}</div>
                   <h3 style={{ fontSize: "16px", fontWeight: 700, marginBottom: "10px" }}>{item.title}</h3>
-                  <p style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: 1.7 }}>{item.desc}</p>
+                  <p style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.7 }}>{item.desc}</p>
                 </div>
               ))}
             </div>

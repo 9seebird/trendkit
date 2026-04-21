@@ -224,7 +224,7 @@ export default function HomePage() {
               <span className="section-eyebrow">Our Services</span>
               <h2 className="section-title">생산성 도구 모음</h2>
               <p className="section-desc" style={{ margin: "0 auto" }}>
-                복잡한 설치 없이 브라우저에서 바로 사용하는 웹 기반 도구들
+                복잡한 설치 없이 브라우저에서 바로 사용하는 <br /> 웹 기반 도구들
               </p>
             </div>
 
