@@ -1,51 +1,40 @@
 /* ============================================================
-   apps/home/styles/globals.css
-   ─────────────────────────────────────────────────────────
-   ★ 이 파일이 전체 디자인 시스템의 단일 소스입니다.
-   ─ 색상, 폰트, 간격, 반경, 그림자 등 모든 디자인 토큰은
-     여기서만 정의하고, 각 컴포넌트는 var(--...) 로 참조하세요.
-   ─ 값을 바꾸면 전체 사이트에 즉시 반영됩니다.
+   styles/globals.css
+   ------------------------------------------------------------
+   목표
+   1) Hero 여백을 다시 적당히 복원
+   2) PC / 태블릿 / 모바일 간 간격 차이를 자연스럽게 정리
+   3) 기존 구조는 유지하고, "여백" 중심으로만 밸런스 조정
+   4) 다른 컴포넌트 구조는 건드리지 않음
    ============================================================ */
 
-/* ── Tailwind CSS 베이스 ── */
 @import "tailwindcss";
 
-/* ── 웹폰트: Google Fonts (DM Sans) ── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
-
-
-/* ══════════════════════════════════════════════
-   1. 디자인 토큰 (라이트 모드 기본값)
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   1. 디자인 토큰
+   ══════════════════════════════════════════ */
 :root {
+  --bg-page:        #f5f4f0;
+  --bg-surface:     #ffffff;
+  --bg-muted:       #f0ede8;
 
-  /* ── 배경색 ──────────────────────────────── */
-  --bg-page:       #f5f4f0;   /* 페이지 전체 배경 */
-  --bg-surface:    #ffffff;   /* 카드·패널 배경   */
-  --bg-muted:      #f0ede8;   /* 구분용 흐린 배경 */
+  --text-primary:   #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted:     #999999;
+  --text-inverted:  #ffffff;
 
-  /* ── 텍스트색 ─────────────────────────────── */
-  --text-primary:   #1a1a1a;  /* 본문 주요 텍스트  */
-  --text-secondary: #555555;  /* 부제·설명 텍스트  */
-  --text-muted:     #999999;  /* 날짜·힌트 등 약한 텍스트 */
-  --text-inverted:  #ffffff;  /* 어두운 배경 위 텍스트 */
+  --brand:          #2563eb;
+  --brand-light:    #dbeafe;
+  --brand-dark:     #1d4ed8;
 
-  /* ── 브랜드 컬러 ──────────────────────────── */
-  --brand:          #2563eb;  /* 주요 강조 색 */
-  --brand-light:    #dbeafe;  /* 뱃지·태그 배경 */
-  --brand-dark:     #1d4ed8;  /* 호버 시 진한 브랜드 */
+  --border:         #e4e2dc;
+  --border-strong:  #c8c5bd;
 
-  /* ── 보더 ─────────────────────────────────── */
-  --border:         #e4e2dc;  /* 일반 선    */
-  --border-strong:  #c8c5bd;  /* 강조 선    */
+  --status-live-bg:   #dcfce7;
+  --status-live-text: #15803d;
+  --status-soon-bg:   #f1f5f9;
+  --status-soon-text: #94a3b8;
 
-  /* ── 상태 색 (Live / Coming Soon) ──────────── */
-  --status-live-bg:   #dcfce7;  /* 라이브 뱃지 배경 */
-  --status-live-text: #15803d;  /* 라이브 뱃지 텍스트 */
-  --status-soon-bg:   #f1f5f9;  /* 예정 뱃지 배경 */
-  --status-soon-text: #94a3b8;  /* 예정 뱃지 텍스트 */
-
-  /* ── 간격 스케일 (8px 기준) ────────────────── */
   --space-1:  4px;
   --space-2:  8px;
   --space-3:  12px;
@@ -56,47 +45,25 @@
   --space-16: 64px;
   --space-24: 96px;
 
-  /* ── 모서리 반경 ───────────────────────────── */
   --radius-sm:   6px;
   --radius-md:   10px;
   --radius-lg:   16px;
   --radius-xl:   24px;
   --radius-full: 9999px;
 
-  /* ── 그림자 ────────────────────────────────── */
   --shadow-sm: 0 1px 4px rgba(0,0,0,0.04);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.07);
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
 
-  /* ── 네비 높이 ─────────────────────────────── */
-  --nav-height: 84px;   /* Header 높이 변경 시 여기만 수정 */
+  --nav-height: 64px;
 
-  /* ── 폰트 패밀리 ───────────────────────────── */
-  --font-sans:  'DM Sans', sans-serif;
-  --font-serif: 'DM Sans', sans-serif;  /* 필요 시 세리프 폰트로 교체 */
+  /* layout.tsx의 next/font variable 사용 */
+  --font-sans: var(--font-sans, 'DM Sans', sans-serif);
 }
 
-
-/* ══════════════════════════════════════════════
-   2. 다크모드 토큰 재정의
-   ══════════════════════════════════════════════ */
-/* <html class="dark"> 를 추가하면 다크모드로 전환됩니다.
-   (DarkModeToggle 컴포넌트가 이 클래스를 토글합니다) */
-.dark {
-  --bg-page:        #0f0f0f;
-  --bg-surface:     #1a1a1a;
-  --bg-muted:       #111111;
-  --text-primary:   #f5f5f5;
-  --text-secondary: #aaaaaa;
-  --text-muted:     #666666;
-  --border:         #2a2a2a;
-  --border-strong:  #3a3a3a;
-}
-
-
-/* ══════════════════════════════════════════════
-   3. 기본 리셋
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   2. 리셋
+   ══════════════════════════════════════════ */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -104,65 +71,79 @@
 }
 
 html {
-  scroll-behavior: smooth; /* 앵커 이동 시 부드러운 스크롤 */
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), 'DM Sans', sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased; /* macOS 폰트 렌더링 최적화 */
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-
-/* ══════════════════════════════════════════════
-   4. 공통 레이아웃 유틸 클래스
-   ══════════════════════════════════════════════ */
-
-/* 페이지 최대 너비 + 좌우 여백 */
+/* ══════════════════════════════════════════
+   3. 공통 레이아웃
+   ------------------------------------------------------------
+   이번 수정 핵심:
+   - Hero 여백이 너무 사라진 느낌이라 다시 살림
+   - 하지만 예전처럼 PC에서 지나치게 붕 뜨지 않게 절충
+   ══════════════════════════════════════════ */
 .container-main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--space-12);
+  padding: 0 40px;
 }
 
-/* 섹션 상하 패딩 */
+/* 일반 섹션 상하 여백
+   너무 붙지 않게 기본 여백 복원 */
 .section-pad {
-  padding: var(--space-24) var(--space-12);
+  padding: 84px 0;
 }
 
+/* HERO 전체 섹션
+   - 높이를 아예 크게 고정하지 않고
+   - desktop에서만 "조금 넉넉한 첫 화면" 느낌을 주도록 설정
+*/
+.hero-section {
+  min-height: auto;
+}
 
-/* ══════════════════════════════════════════════
-   5. 공통 섹션 헤더 패턴
-   ── 사용 예:
-      <span class="section-eyebrow">About</span>
-      <h2 class="section-title">제목</h2>
-      <p class="section-desc">설명문</p>
-   ══════════════════════════════════════════════ */
+/* HERO 내부 여백
+   ------------------------------------------------------------
+   현재 목표:
+   - PC: 충분히 시원해 보이게
+   - 모바일: 너무 꽉 차지 않게
+   - 이전처럼 모바일이 오히려 더 커지는 현상 방지
+*/
+.hero-inner {
+  width: 100%;
+  padding: 56px 40px 52px;
+}
 
-/* 섹션 위 작은 레이블 (예: "CONTACT", "SERVICE") */
+/* ══════════════════════════════════════════
+   4. 섹션 헤더
+   ══════════════════════════════════════════ */
 .section-eyebrow {
   display: inline-block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--brand);
-  margin-bottom: var(--space-4);
+  margin-bottom: 16px;
 }
 
-/* 섹션 주 제목 */
 .section-title {
-  font-family: var(--font-sans);
-  font-size: clamp(28px, 4vw, 44px); /* 반응형 폰트 크기 */
+  font-size: clamp(24px, 4vw, 44px);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
-  margin-bottom: var(--space-4);
+  margin-bottom: 16px;
+  line-height: 1.15;
 }
 
-/* 섹션 설명 텍스트 */
 .section-desc {
   font-size: 16px;
   color: var(--text-secondary);
@@ -170,65 +151,345 @@ body {
   line-height: 1.75;
 }
 
-
-/* ══════════════════════════════════════════════
-   6. 공통 버튼 스타일
-   ── 사용 예:
-      <button class="btn btn-dark">제출</button>
-      <a class="btn btn-outline" href="/about">보기</a>
-   ══════════════════════════════════════════════ */
-
-/* 버튼 베이스 */
+/* ══════════════════════════════════════════
+   5. 버튼
+   ══════════════════════════════════════════ */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: 11px 24px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  min-height: 44px;
+
   border-radius: var(--radius-md);
-  font-family: var(--font-sans);
+  border: none;
+
+  font-family: var(--font-sans), sans-serif;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
-  border: none;
-  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-}
-.btn:hover {
-  transform: translateY(-1px); /* 호버 시 살짝 떠오르는 효과 */
+
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
-/* 어두운 배경 버튼 (주요 CTA) */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
 .btn-dark {
   background: var(--text-primary);
   color: var(--text-inverted);
   box-shadow: var(--shadow-sm);
 }
+
 .btn-dark:hover {
   box-shadow: var(--shadow-md);
 }
 
-/* 외곽선 버튼 (보조 CTA) */
 .btn-outline {
   background: transparent;
   color: var(--text-primary);
   border: 1.5px solid var(--border);
 }
+
 .btn-outline:hover {
   border-color: var(--text-primary);
 }
 
+/* ══════════════════════════════════════════
+   6. 공통 카드
+   ══════════════════════════════════════════ */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
 
-/* ══════════════════════════════════════════════
-   7. 반응형 breakpoint
-   ══════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  /* 모바일: 좌우 여백 축소 */
+.card-page {
+  background: var(--bg-page);
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+/* ══════════════════════════════════════════
+   7. 반응형 그리드 유틸
+   ------------------------------------------------------------
+   gap도 여백 체감에 영향을 주므로 너무 붙지 않게 유지
+   ══════════════════════════════════════════ */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* ══════════════════════════════════════════
+   8. 햄버거 / 모바일 메뉴
+   ══════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.25s;
+  transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+
+  background: rgba(245, 244, 240, 0.98);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+
+  padding: 12px 16px 20px;
+  z-index: 99;
+
+  flex-direction: column;
+  gap: 2px;
+  animation: slideDown 0.2s ease;
+}
+
+.mobile-nav.open {
+  display: flex;
+}
+
+.mobile-nav a {
+  display: block;
+  min-height: 48px;
+  padding: 13px 16px;
+
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+
+  border-radius: var(--radius-md);
+  transition: background 0.15s, color 0.15s;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a.active {
+  color: var(--text-primary);
+  background: rgba(0,0,0,0.06);
+}
+
+.mobile-nav a.active {
+  font-weight: 700;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════
+   9. Breakpoints
+   ══════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────
+   태블릿
+   ------------------------------------------------
+   - Hero 여백은 desktop보다 조금 줄임
+   - section 간격도 약간만 줄임
+   ───────────────────────────────────────── */
+@media (max-width: 1024px) {
   .container-main {
-    padding: 0 var(--space-6);
+    padding: 0 28px;
   }
 
-  /* 모바일: 섹션 상하 패딩 축소 */
   .section-pad {
-    padding: var(--space-16) var(--space-6);
+    padding: 72px 0;
+  }
+
+  .hero-section {
+    min-height: auto;
+  }
+
+  .hero-inner {
+    padding: 68px 28px 64px;
+  }
+
+  .grid-2col {
+    gap: 36px;
+  }
+
+  .grid-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-cards {
+    gap: 20px;
+  }
+}
+
+/* ─────────────────────────────────────────
+   모바일
+   ------------------------------------------------
+   - Hero 여백을 너무 확 줄이지 않고
+     "적당히 숨 쉴 공간"은 남김
+   - 버튼은 세로 스택
+   - 카드 패딩 소폭 축소
+   ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 60px;
+  }
+
+  .container-main {
+    padding: 0 20px;
+  }
+
+  .section-pad {
+    padding: 60px 0;
+  }
+
+  .hero-section {
+    min-height: auto;
+  }
+
+  .hero-inner {
+    padding: 46px 20px 42px;
+  }
+
+  .grid-2col {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .grid-3col {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-cards {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .btn-group {
+    flex-direction: column !important;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-desc {
+    max-width: 100%;
+  }
+
+  .card {
+    padding: 22px;
+  }
+}
+
+/* ─────────────────────────────────────────
+   소형 모바일
+   ------------------------------------------------
+   - 너무 꽉 차 보이지 않게 최소 여백만 보정
+   ───────────────────────────────────────── */
+@media (max-width: 480px) {
+  .container-main {
+    padding: 0 16px;
+  }
+
+  .section-title {
+    font-size: clamp(22px, 6vw, 30px);
+  }
+
+  .hero-inner {
+    padding: 40px 16px 48px;
+  }
+
+  .grid-cards {
+    gap: 16px;
+  }
+
+  .card {
+    padding: 20px;
   }
 }

@@ -28,8 +28,8 @@ apps/home/
 ├── app/
 │   ├── _components/
 │   │   ├── Header/        # 네비게이션 헤더 (현재 페이지 굵게 표시)
-│   │   ├── Footer/        # 푸터
-│   │   └── BackButton/    # 뒤로가기 버튼 (서브페이지 공통)
+│   │   └── Footer/        # 푸터
+│   │   
 │   ├── about/             # /about 페이지
 │   ├── contact/           # /contact 페이지 (공지 + 고객 요청)
 │   ├── services/          # /services 페이지
