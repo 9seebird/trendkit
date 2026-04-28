@@ -21,6 +21,17 @@ const TOOLS = [
     tags: ["Excel", "병합", "컬럼 매핑"],
   },
   {
+    icon: "📄",
+    iconBg: "#fef3c7",
+    category: "파일 변환",
+    name: "PDF 편집기",
+    desc: "PDF 편집 및 변환 기능이 준비 중입니다. 향후 간단한 문서 수정과 변환 기능을 추가할 예정입니다.",
+    href: URLS.pdf,
+    status: "live" as const,
+    external: true,
+    tags: ["PDF", "변환", "Word"],
+  },
+  {
     icon: "☁️",
     iconBg: "#dbeafe",
     category: "뉴스 분석",
@@ -41,17 +52,6 @@ const TOOLS = [
     status: "live" as const,
     external: true,
     tags: ["트렌드", "키워드", "뉴스 분석"],
-  },
-  {
-    icon: "📄",
-    iconBg: "#fef3c7",
-    category: "파일 변환",
-    name: "PDF 편집기",
-    desc: "PDF 편집 및 변환 기능이 준비 중입니다. 향후 간단한 문서 수정과 변환 기능을 추가할 예정입니다.",
-    href: "#",
-    status: "soon" as const,
-    external: true,
-    tags: ["PDF", "변환", "Word"],
   },
 ];
 
