@@ -2,7 +2,6 @@
 // ★ 폰트: next/font로 DM Sans만 관리 (self-hosted, 중복 로딩 없음)
 // ★ globals.css의 Google Fonts @import는 제거됨
 import type { Metadata } from "next";
-import Script from "next/script";
 import { DM_Sans } from "next/font/google";
 import "../styles/globals.css";
 
@@ -26,17 +25,16 @@ const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={dmSans.variable}>
-      <body suppressHydrationWarning>
+      <head>
         {adsenseClientId ? (
-          <Script
+          <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
           />
         ) : null}
-        {children}
-      </body>
+      </head>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

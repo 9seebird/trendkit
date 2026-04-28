@@ -11,7 +11,7 @@ const HERO_TOOLS = [
     icon: "📊",
     iconBg: "#dbeafe",
     name: "Excel Smart Merger",
-    desc: "여러 엑셀 파일을 스마트하게 병합. 컬럼 매핑, 다운로드까지.",
+    desc: "여러 엑셀 파일을 컬럼 기반으로 병합. 컬럼 매핑, 다운로드까지",
     href: URLS.excel,
     status: "live" as const,
     external: true,
@@ -21,7 +21,7 @@ const HERO_TOOLS = [
     iconBg: "#fef3c7",
     category: "파일 변환",
     name: "PDF 편집기",
-    desc: "PDF 편집 및 변환 간단한 문서 수정과 변환 기능.",
+    desc: "PDF 편집 및 병합, 문서 수정과 이미지 변환 기능",
     href: URLS.pdf,
     status: "live" as const,
     external: true,
@@ -31,7 +31,7 @@ const HERO_TOOLS = [
     icon: "☁️",
     iconBg: "#dbeafe",
     name: "워드클라우드 생성기",
-    desc: "검색어 기반 뉴스 워드클라우드 생성. 이미지·CSV 다운로드 지원.",
+    desc: "검색어 기반 워드클라우드 생성. 이미지·CSV 다운로드 지원",
     href: URLS.wordcloud,
     status: "live" as const,
     external: true,
@@ -40,7 +40,7 @@ const HERO_TOOLS = [
     icon: "📈",
     iconBg: "#dcfce7",
     name: "키워드 트렌드",
-    desc: "오늘 뉴스 키워드 빈도 분석. 바 차트와 태그 클라우드로 시각화.",
+    desc: "오늘 뉴스 키워드 빈도 분석. 바 차트와 태그 클라우드로 시각화",
     href: URLS.trends,
     status: "live" as const,
     external: true,
@@ -310,11 +310,11 @@ export default function HomePage() {
                 </Link>
               ))}
             </div>
+
             <div style={{ textAlign: "center", marginTop: "40px" }}>
               <Link href="/services" className="btn btn-outline">
                 모든 서비스 보기
               </Link>
-
             </div>
           </div>
         </section>
