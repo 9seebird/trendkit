@@ -2,6 +2,7 @@ import Link from "next/link";
 import Header from "../_components/Header";
 import Footer from "../_components/Footer";
 import FAQAccordion from "@/app/_components/FAQAccordion";
+import AdSenseAd from "@/app/_components/AdSenseAd";
 import { URLS } from "@/lib/urls";
 
 /* ============================================================
@@ -25,7 +26,7 @@ const TOOLS = [
     iconBg: "#fef3c7",
     category: "파일 변환",
     name: "PDF 편집기",
-    desc: "PDF 편집 및 변환 기능이 준비 중입니다. 향후 간단한 문서 수정과 변환 기능을 추가할 예정입니다.",
+    desc: "PDF 편집 및 변환 간단한 문서 수정과 변환 기능",
     href: URLS.pdf,
     status: "live" as const,
     external: true,
@@ -69,6 +70,16 @@ const SERVICE_FAQ = [
     question: "같은 형식이 아닌 파일도 병합할 수 있나요?",
     answer:
       "기본적으로는 비슷한 컬럼 구조를 가진 파일끼리 병합할 때 가장 효율적입니다.\n다만 컬럼명을 확인하고 맞춘 뒤 병합하면 형식이 조금 다른 파일도 정리할 수 있습니다.",
+  },
+  {
+    question: "PDF 편집기는 어떤 기능을 제공하나요?",
+    answer:
+      "PDF 파일의 텍스트 수정, 페이지 추가/삭제, 순서 변경 등 다양한 편집 기능을 제공합니다. 문서 수정이나 간단한 재가공 작업에 유용합니다.",
+  },
+  {
+    question: "PDF 파일을 다른 형식으로 변환할 수 있나요?",
+    answer:
+      "네, PDF를 이미지나 텍스트 형태로 변환하거나 반대로 파일을 PDF로 저장할 수 있습니다. 문서 공유나 제출용 파일 준비에 편리합니다.",
   },
   {
     question: "워드클라우드 생성기는 어떤 도구인가요?",
@@ -126,6 +137,10 @@ export default function ServicesPage() {
             </p>
           </div>
         </section>
+
+        <div className="container-main services-top-ad">
+          <AdSenseAd label="서비스 상단 광고" />
+        </div>
 
         {/* 서비스 카드 목록 */}
         <section className="section-pad" style={{ background: "var(--bg-page)" }}>
@@ -267,11 +282,19 @@ export default function ServicesPage() {
                 );
               })}
             </div>
+
+            <div className="services-card-bottom-ad">
+              <AdSenseAd label="서비스 카드 하단 광고" />
+            </div>
           </div>
         </section>
 
         {/* FAQ */}
         <FAQAccordion title="자주 묻는 질문(FAQ)" items={SERVICE_FAQ} />
+
+        <div className="container-main services-faq-bottom-ad">
+          <AdSenseAd label="FAQ 하단 광고" />
+        </div>
       </main>
 
       <Footer />

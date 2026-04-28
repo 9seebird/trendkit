@@ -2,6 +2,7 @@ import ExcelUploader from "@/app/components/ExcelUploader";
 import ManualModal from "@/app/components/ManualModal";
 import DarkModeToggle from "@/app/components/ExcelUploader/DarkModeToggle";
 import Link from "next/link";
+import AdSenseAd from "@/app/components/AdSenseAd";
 
 export default function Home() {
   return (
@@ -25,8 +26,20 @@ export default function Home() {
           <ManualModal />
         </div>
       </header>
-      <main className="container mx-auto py-8">
+      <main className="container mx-auto py-8 px-4">
+        <div className="excel-top-ad mb-6">
+          <AdSenseAd label="엑셀 병합기 상단 광고" />
+        </div>
+
         <ExcelUploader />
+
+        <div className="excel-mid-ad my-6">
+          <AdSenseAd label="엑셀 병합기 중단 광고" />
+        </div>
+
+        <div className="excel-bottom-ad mt-6">
+          <AdSenseAd label="엑셀 병합기 하단 광고" />
+        </div>
       </main>
     </div>
   );

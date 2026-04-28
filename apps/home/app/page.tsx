@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
+import AdSenseAd from "./_components/AdSenseAd";
 import { URLS } from "@/lib/urls";
 
 const HERO_TOOLS = [
@@ -10,16 +11,27 @@ const HERO_TOOLS = [
     icon: "📊",
     iconBg: "#dbeafe",
     name: "Excel Smart Merger",
-    desc: "여러 엑셀 파일을 컬럼 기반으로 스마트하게 병합. 컬럼 매핑, 미리보기, 다운로드까지.",
+    desc: "여러 엑셀 파일을 스마트하게 병합. 컬럼 매핑, 다운로드까지.",
     href: URLS.excel,
     status: "live" as const,
     external: true,
+  },
+    {
+    icon: "📄",
+    iconBg: "#fef3c7",
+    category: "파일 변환",
+    name: "PDF 편집기",
+    desc: "PDF 편집 및 변환 간단한 문서 수정과 변환 기능.",
+    href: URLS.pdf,
+    status: "live" as const,
+    external: true,
+    tags: ["PDF", "변환", "Word"],
   },
   {
     icon: "☁️",
     iconBg: "#dbeafe",
     name: "워드클라우드 생성기",
-    desc: "검색어 기반 뉴스 수집 후 워드클라우드 생성. 이미지·CSV 다운로드 지원.",
+    desc: "검색어 기반 뉴스 워드클라우드 생성. 이미지·CSV 다운로드 지원.",
     href: URLS.wordcloud,
     status: "live" as const,
     external: true,
@@ -209,6 +221,10 @@ export default function HomePage() {
           </div>
         </section>
 
+        <div className="container-main home-after-hero-ad">
+          <AdSenseAd label="홈 상단 광고" />
+        </div>
+
         {/* ══ 서비스 미리보기 ══ */}
         <section
           className="section-pad"
@@ -294,14 +310,17 @@ export default function HomePage() {
                 </Link>
               ))}
             </div>
-
             <div style={{ textAlign: "center", marginTop: "40px" }}>
               <Link href="/services" className="btn btn-outline">
                 모든 서비스 보기
               </Link>
+
             </div>
           </div>
         </section>
+        <div className="container-main home-footer-ad">
+          <AdSenseAd label="홈 하단 광고" />
+        </div>
       </main>
       <Footer />
     </>
