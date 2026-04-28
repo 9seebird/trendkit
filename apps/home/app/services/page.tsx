@@ -50,7 +50,7 @@ const TOOLS = [
     desc: "PDF 편집 및 변환 기능이 준비 중입니다. 향후 간단한 문서 수정과 변환 기능을 추가할 예정입니다.",
     href: "#",
     status: "soon" as const,
-    external: false,
+    external: true,
     tags: ["PDF", "변환", "Word"],
   },
 ];
