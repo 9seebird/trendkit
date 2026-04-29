@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import re
 import html
 
+import requests
 import feedparser
 from bs4 import BeautifulSoup
 
@@ -39,6 +40,17 @@ SECTION_URLS = [
     f"{GOOGLE_NEWS_BASE}/headlines/section/topic/SPORTS{COMMON_QS}",
     f"{GOOGLE_NEWS_BASE}/headlines/section/topic/ENTERTAINMENT{COMMON_QS}",
 ]
+
+def fetch_rss(url: str):
+    """requests로 RSS를 fetch한 뒤 feedparser로 파싱합니다."""
+    try:
+        resp = requests.get(url, headers=RSS_HEADERS, timeout=15)
+        resp.raise_for_status()
+        return feedparser.parse(resp.text)
+    except Exception as e:
+        print(f"### RSS fetch error ({url}): {e}")
+        return feedparser.FeedParserDict(entries=[])
+
 
 trend_cache: dict[int, dict] = {}
 
@@ -247,7 +259,7 @@ def fetch_google_news_multi_sections(max_total: int = 200) -> List[Dict[str, Any
     seen = set()
 
     for url in SECTION_URLS:
-        feed = feedparser.parse(url)
+        feed = fetch_rss(url)
 
         for entry in feed.entries:
             link = entry.get("link", "")
