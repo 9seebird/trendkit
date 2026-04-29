@@ -254,13 +254,37 @@ NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
 # 다양한 키워드로 수집해서 종합 트렌드를 만듭니다
 TREND_QUERIES = ["뉴스", "정치", "경제", "사회", "연예", "스포츠", "기술", "국제"]
 
+# 네이버 뉴스 검색 API 제한값
+NAVER_API_DISPLAY_MAX = 100
+NAVER_API_START_MAX = 1000
 
-def fetch_google_news_multi_sections(max_total: int = 200) -> List[Dict[str, Any]]:
-    """
-    네이버 뉴스 검색 API로 여러 키워드의 기사를 수집합니다. (Google RSS 대체)
-    """
-    import os as _os
 
+def normalize_article_key(link: str, title: str) -> str:
+    """
+    검색어가 달라도 같은 기사가 중복 집계되지 않도록
+    원문 링크를 우선으로 정규화하고, 링크가 없으면 제목을 기준으로 중복 제거합니다.
+    """
+    link = (link or "").strip()
+    title = re.sub(r"\s+", " ", (title or "").strip())
+
+    if link:
+        # 흔한 추적 파라미터 제거
+        link = re.sub(r"[?&](utm_[^=&]+|fbclid|gclid|ocid)=[^&]+", "", link)
+        link = link.rstrip("?&")
+        return link
+
+    return title.lower()
+
+
+def fetch_naver_news_multi_queries(max_total: int = 200) -> List[Dict[str, Any]]:
+    """
+    네이버 뉴스 검색 API로 여러 키워드의 기사를 수집합니다.
+
+    개선점:
+    - 각 검색어마다 start=1 한 페이지만 보던 문제를 수정해 페이지네이션합니다.
+    - 검색어별 목표 수량보다 조금 넉넉히 가져와 중복 제거 후 max_total에 최대한 맞춥니다.
+    - originallink를 우선 사용해 중복 제거 정확도를 높입니다.
+    """
     if not NAVER_CLIENT_ID or not NAVER_CLIENT_SECRET:
         print("### NAVER API KEY 미설정 ###")
         return []
@@ -271,51 +295,91 @@ def fetch_google_news_multi_sections(max_total: int = 200) -> List[Dict[str, Any
     }
 
     items: List[Dict[str, Any]] = []
-    seen = set()
-    per_query = max(10, max_total // len(TREND_QUERIES))
+    seen: Set[str] = set()
+
+    # 검색어가 겹치므로 중복 제거 후에도 목표 기사 수에 가까워지도록 넉넉히 요청합니다.
+    per_query_target = max(30, (max_total // max(1, len(TREND_QUERIES))) + 30)
 
     for query in TREND_QUERIES:
         if len(items) >= max_total:
             break
-        try:
-            resp = requests.get(
-                "https://openapi.naver.com/v1/search/news.json",
-                headers=headers,
-                params={"query": query, "display": min(100, per_query), "start": 1, "sort": "date"},
-                timeout=15,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-        except Exception as e:
-            print(f"### Naver News fetch error ({query}): {e}")
-            continue
 
-        for item in data.get("items", []):
-            title = clean_html(item.get("title", ""))
-            summary = clean_html(item.get("description", ""))
-            link = item.get("originallink") or item.get("link", "")
-            published = item.get("pubDate", "")
+        collected_for_query = 0
+        start = 1
 
-            title = strip_source_suffix(title)
-            summary = strip_source_suffix(summary)
+        while (
+            len(items) < max_total
+            and collected_for_query < per_query_target
+            and start <= NAVER_API_START_MAX
+        ):
+            display = min(NAVER_API_DISPLAY_MAX, per_query_target - collected_for_query)
+            if display <= 0:
+                break
 
-            key = (link, title)
-            if key in seen:
-                continue
-            seen.add(key)
+            try:
+                resp = requests.get(
+                    "https://openapi.naver.com/v1/search/news.json",
+                    headers=headers,
+                    params={
+                        "query": query,
+                        "display": display,
+                        "start": start,
+                        "sort": "date",
+                    },
+                    timeout=15,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+            except Exception as e:
+                print(f"### Naver News fetch error ({query}, start={start}): {e}")
+                break
 
-            items.append({
-                "title": title,
-                "summary": summary,
-                "link": link,
-                "published": published,
-                "source": "",
-            })
+            api_items = data.get("items", [])
+            if not api_items:
+                break
 
-            if len(items) >= max_total:
+            for item in api_items:
+                title = clean_html(item.get("title", ""))
+                summary = clean_html(item.get("description", ""))
+                link = item.get("originallink") or item.get("link", "")
+                published = item.get("pubDate", "")
+
+                title = strip_source_suffix(title)
+                summary = strip_source_suffix(summary)
+
+                key = normalize_article_key(link, title)
+                if not key or key in seen:
+                    continue
+                seen.add(key)
+
+                items.append({
+                    "title": title,
+                    "summary": summary,
+                    "link": link,
+                    "published": published,
+                    "source": "",
+                    "query": query,
+                })
+
+                if len(items) >= max_total:
+                    break
+
+            collected_for_query += len(api_items)
+
+            # 네이버 검색 API는 다음 페이지가 start + display 입니다.
+            start += display
+
+            # 마지막 페이지이면 종료합니다.
+            total = int(data.get("total", 0) or 0)
+            if start > total:
                 break
 
     return items[:max_total]
+
+
+# 기존 함수명을 참조하는 코드가 있어도 동작하도록 호환용 별칭을 둡니다.
+def fetch_google_news_multi_sections(max_total: int = 200) -> List[Dict[str, Any]]:
+    return fetch_naver_news_multi_queries(max_total=max_total)
 
 
 # =========================================================
@@ -330,7 +394,7 @@ def compute_trends(limit: int):
     - summary는 잡음이 많아서 기본적으로 제외
     - 필요하면 아래 주석 부분 활성화 가능
     """
-    items = fetch_google_news_multi_sections(max_total=limit)
+    items = fetch_naver_news_multi_queries(max_total=limit)
 
     texts: List[str] = []
 

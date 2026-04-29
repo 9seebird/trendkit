@@ -265,8 +265,8 @@
         <p style="color: var(--muted); font-size: 14px; margin-top: 10px">
           네이버 뉴스 검색 기준으로 형태소 분석 후 상위 키워드를
           표시합니다. <br />
-          버튼 클릭 시 더 많은 기사를 반영하여 갱신합니다. 한번에
-          40건씩 증가합니다.
+          버튼 클릭 시 요청 기사 수를 늘려 네이버 뉴스 검색 결과를 다시 분석합니다. 한번에
+          50건씩 증가합니다.
         </p>
       </div>
 
@@ -291,28 +291,28 @@
 
     <script>
       // =============================
-      // 설정: 기본/증가폭/상한
+      // 설정: API 경로와 기사 요청 수
       // =============================
-      const API_URL = "/api/trends";
-      const BASE_LIMIT = 300; // 시작값
-      const STEP = 50; // 클릭 시 증가폭
-      const MAX_LIMIT = 600; // 서버 상한과 맞춤
+      const TRENDS_API_URL = "/api/trends";
+      const DEFAULT_ARTICLE_LIMIT = 300; // 최초 분석 기사 요청 수
+      const ARTICLE_LIMIT_STEP = 50; // 새로고침 클릭 시 추가 요청 수
+      const MAX_ARTICLE_LIMIT = 600; // 서버 MAX_LIMIT와 맞춤
 
       // DOM
-      const statusEl = document.getElementById("statusText");
+      const statusTextEl = document.getElementById("statusText");
       const reloadBtn = document.getElementById("reloadBtn");
-      const listEl = document.getElementById("keywordList");
-      const chartEl = document.getElementById("trendChart");
-      let chartInstance = null;
+      const keywordListEl = document.getElementById("keywordList");
+      const trendChartCanvas = document.getElementById("trendChart");
+      let trendChartInstance = null;
 
-      // 현재 limit을 localStorage로 유지(새 탭/새로고침에도 기억)
-      let currentLimit = parseInt(
-        localStorage.getItem("trendLimit") || BASE_LIMIT,
+      // 현재 기사 요청 수를 localStorage로 유지(새 탭/새로고침에도 기억)
+      let currentArticleLimit = parseInt(
+        localStorage.getItem("trendArticleLimit") || DEFAULT_ARTICLE_LIMIT,
         10
       );
-      currentLimit = isNaN(currentLimit)
-        ? BASE_LIMIT
-        : Math.min(currentLimit, MAX_LIMIT);
+      currentArticleLimit = Number.isNaN(currentArticleLimit)
+        ? DEFAULT_ARTICLE_LIMIT
+        : Math.min(currentArticleLimit, MAX_ARTICLE_LIMIT);
 
       // 버튼 라벨: 단순화
       function syncButtonLabel() {
@@ -329,22 +329,22 @@
         wrapperEl.style.minHeight = `${h}px`;
       }
 
-      // 핵심 로더: force=true면 서버 캐시 무시(_t=force)
-      async function loadTodayTrends(force = false, limit = currentLimit) {
-        const url = force
-          ? `${API_URL}?limit=${limit}&_t=force`
-          : `${API_URL}?limit=${limit}`;
+      // 핵심 로더: forceRefresh=true면 서버 캐시 무시(_t=force)
+      async function fetchAndRenderTrends(forceRefresh = false, articleLimit = currentArticleLimit) {
+        const requestUrl = forceRefresh
+          ? `${TRENDS_API_URL}?limit=${articleLimit}&_t=force`
+          : `${TRENDS_API_URL}?limit=${articleLimit}`;
 
         reloadBtn.disabled = true;
-        statusEl.textContent = "데이터를 불러오는 중...";
-        listEl.innerHTML = "";
-        if (chartInstance) {
-          chartInstance.destroy();
-          chartInstance = null;
+        statusTextEl.textContent = "데이터를 불러오는 중...";
+        keywordListEl.innerHTML = "";
+        if (trendChartInstance) {
+          trendChartInstance.destroy();
+          trendChartInstance = null;
         }
 
         try {
-          const res = await fetch(url, { cache: "no-store" });
+          const res = await fetch(requestUrl, { cache: "no-store" });
           if (!res.ok) throw new Error(`서버 응답 오류 (${res.status})`);
           const data = await res.json();
           if (!data || data.ok !== true)
@@ -357,12 +357,12 @@
           const countsAll = top50.map((r) => r.count);
 
           if (labelsAll.length === 0) {
-            statusEl.textContent = "관련 키워드가 없습니다.";
+            statusTextEl.textContent = "관련 키워드가 없습니다.";
             return;
           }
 
           // 상태 문구: 간단하게 ‘기사 N건 기준’만 표시
-          statusEl.innerHTML = `기사 <strong>${itemsCount.toLocaleString()}</strong>건 기준`;
+          statusTextEl.innerHTML = `기사 <strong>${itemsCount.toLocaleString()}</strong>건 기준`;
 
           // 리스트 렌더(Top 50)
           const frag = document.createDocumentFragment();
@@ -376,20 +376,20 @@
             li.append(name, badge);
             frag.appendChild(li);
           }
-          listEl.appendChild(frag);
+          keywordListEl.appendChild(frag);
 
           // 차트 렌더(상위 20)
-          const ctx = chartEl.getContext("2d");
+          const ctx = trendChartCanvas.getContext("2d");
           const labels = labelsAll.slice(0, 20);
           const counts = countsAll.slice(0, 20);
-          const gradient = ctx.createLinearGradient(0, 0, chartEl.width, 0);
+          const gradient = ctx.createLinearGradient(0, 0, trendChartCanvas.width, 0);
           gradient.addColorStop(0, "rgba(37, 99, 235, 0.85)");
           gradient.addColorStop(1, "rgba(99, 161, 255, 0.85)");
           const maxVal = counts.length ? Math.max(...counts) : 1;
 
-          setChartDynamicHeight(chartEl.parentElement, labels.length);
+          setChartDynamicHeight(trendChartCanvas.parentElement, labels.length);
 
-          chartInstance = new Chart(ctx, {
+          trendChartInstance = new Chart(ctx, {
             type: "bar",
             data: {
               labels,
@@ -438,20 +438,20 @@
           // 필요 시 디버그는 콘솔로만
           // console.log({ limit_used: data.limit_used, cached: data.cached, force: data.force });
         } catch (err) {
-          statusEl.textContent = `에러: ${err.message}`;
+          statusTextEl.textContent = `에러: ${err.message}`;
         } finally {
           reloadBtn.disabled = false;
         }
       }
 
       // 최초 로드
-      loadTodayTrends(false, currentLimit);
+      fetchAndRenderTrends(false, currentArticleLimit);
 
-      // 새로고침: limit STEP 증가 + 강제 새로고침
+      // 새로고침: 기사 요청 수 증가 + 강제 새로고침
       reloadBtn.addEventListener("click", () => {
-        currentLimit = Math.min(currentLimit + STEP, MAX_LIMIT);
-        localStorage.setItem("trendLimit", String(currentLimit));
-        loadTodayTrends(true, currentLimit);
+        currentArticleLimit = Math.min(currentArticleLimit + ARTICLE_LIMIT_STEP, MAX_ARTICLE_LIMIT);
+        localStorage.setItem("trendArticleLimit", String(currentArticleLimit));
+        fetchAndRenderTrends(true, currentArticleLimit);
       });
 
       // 오늘 날짜 yyyy-MM-dd
@@ -460,20 +460,20 @@
         .slice(0, 10);
 
       // 반응형 보정(기존 유지)
-      const rankListEl = document.getElementById("keywordList");
       let isMobileLayout = window.innerWidth <= 900;
       function handleResize() {
         const w = window.innerWidth;
         if (w > 900 && isMobileLayout) {
-          rankListEl.style.columns = "2";
-          rankListEl.style.columnGap = "40px";
-          rankListEl.style.paddingLeft = "20px";
+          keywordListEl.style.columns = "2";
+          keywordListEl.style.columnGap = "40px";
+          keywordListEl.style.paddingLeft = "20px";
           isMobileLayout = false;
         } else if (w <= 900 && !isMobileLayout) {
           isMobileLayout = true;
         }
-      }
+        }
       window.addEventListener("resize", handleResize);
+      handleResize();
     </script>
   </body>
 </html>
