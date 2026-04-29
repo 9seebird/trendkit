@@ -12,8 +12,8 @@ import html
 import csv
 import base64
 import urllib.parse
-import requests  # requirements.txt에 추가 필요
 
+import requests
 import feedparser
 from bs4 import BeautifulSoup
 from wordcloud import WordCloud
@@ -262,66 +262,81 @@ def simple_ko_tokenize(text: str) -> List[str]:
 
 
 # =========================================================
-# 구글 뉴스 RSS 수집
-# - 검색어가 없으면 일반 뉴스 RSS
-# - 검색어가 있으면 검색 RSS
-# - 중복 기사 제거
-# - 제목/요약 정제 수행
+# 네이버 뉴스 검색 API 설정
+# Render 환경변수에 아래 두 값을 등록하세요:
+#   NAVER_CLIENT_ID
+#   NAVER_CLIENT_SECRET
 # =========================================================
+NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
+NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
+
+
 def fetch_google_news_ko(query: Optional[str], max_items: int = 100) -> List[Dict[str, Any]]:
+    """
+    네이버 뉴스 검색 API로 기사를 수집합니다. (Google RSS 대체)
+    """
     if not query:
-        rss_url = "https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko"
-    else:
-        q = urllib.parse.quote(query)
-        rss_url = f"https://news.google.com/rss/search?q={q}&hl=ko&gl=KR&ceid=KR:ko"
-        
-    # ↓ 이 부분 추가
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    }
-    try:
-        resp = requests.get(rss_url, headers=headers, timeout=15)
-        resp.raise_for_status()
-        feed = feedparser.parse(resp.text)
-    except Exception as e:
-        print(f"### RSS fetch error: {e}")
         return []
+
+    if not NAVER_CLIENT_ID or not NAVER_CLIENT_SECRET:
+        print("### NAVER API KEY 미설정 ###")
+        return []
+
+    headers = {
+        "X-Naver-Client-Id": NAVER_CLIENT_ID,
+        "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
+    }
 
     items: List[Dict[str, Any]] = []
     seen = set()
+    start = 1
+    display = min(100, max_items)
 
-    for entry in feed.entries:
-        source = getattr(entry, "source", {}).get("title", "") if hasattr(entry, "source") else ""
-        source = clean_html(source)
+    while len(items) < max_items:
+        try:
+            resp = requests.get(
+                "https://openapi.naver.com/v1/search/news.json",
+                headers=headers,
+                params={"query": query, "display": display, "start": start, "sort": "date"},
+                timeout=15,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+        except Exception as e:
+            print(f"### Naver News fetch error: {e}")
+            break
 
-        title = clean_html(entry.get("title", ""))
-        summary = clean_html(entry.get("summary", ""))
-        link = entry.get("link", "")
-        published = entry.get("published", "")
+        news_items = data.get("items", [])
+        if not news_items:
+            break
 
-        # 1차: 제목/요약 끝 매체명 꼬리표 제거
-        title = strip_source_suffix(title)
-        summary = strip_source_suffix(summary)
+        for item in news_items:
+            title = clean_html(item.get("title", ""))
+            summary = clean_html(item.get("description", ""))
+            link = item.get("originallink") or item.get("link", "")
+            published = item.get("pubDate", "")
 
-        # 2차: source 기반으로 매체명 한 번 더 제거
-        title = remove_source_mentions(title, source)
-        summary = remove_source_mentions(summary, source)
+            title = strip_source_suffix(title)
+            summary = strip_source_suffix(summary)
 
-        # 중복 기사 제거
-        key = (link.split("?")[0], title)
-        if key in seen:
-            continue
-        seen.add(key)
+            key = (link, title)
+            if key in seen:
+                continue
+            seen.add(key)
 
-        items.append({
-            "title": title,
-            "summary": summary,
-            "link": link,
-            "published": published,
-            "source": source,
-        })
+            items.append({
+                "title": title,
+                "summary": summary,
+                "link": link,
+                "published": published,
+                "source": "",
+            })
 
-        if len(items) >= max_items:
+            if len(items) >= max_items:
+                break
+
+        start += display
+        if start > 1000:
             break
 
     return items

@@ -4,6 +4,7 @@ from typing import List, Optional, Dict, Any, Set
 from pathlib import Path
 from collections import Counter
 from datetime import datetime, timedelta
+import os
 import re
 import html
 
@@ -40,17 +41,6 @@ SECTION_URLS = [
     f"{GOOGLE_NEWS_BASE}/headlines/section/topic/SPORTS{COMMON_QS}",
     f"{GOOGLE_NEWS_BASE}/headlines/section/topic/ENTERTAINMENT{COMMON_QS}",
 ]
-
-def fetch_rss(url: str):
-    """requests로 RSS를 fetch한 뒤 feedparser로 파싱합니다."""
-    try:
-        resp = requests.get(url, headers=RSS_HEADERS, timeout=15)
-        resp.raise_for_status()
-        return feedparser.parse(resp.text)
-    except Exception as e:
-        print(f"### RSS fetch error ({url}): {e}")
-        return feedparser.FeedParserDict(entries=[])
-
 
 trend_cache: dict[int, dict] = {}
 
@@ -251,40 +241,67 @@ def simple_ko_tokenize(text: str) -> List[str]:
 # =========================================================
 # RSS 수집
 # =========================================================
+# =========================================================
+# 네이버 뉴스 검색 API 설정
+# Render 환경변수에 아래 두 값을 등록하세요:
+#   NAVER_CLIENT_ID
+#   NAVER_CLIENT_SECRET
+# =========================================================
+NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
+NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
+
+# 트렌드 키워드 서비스에서 사용할 검색어 목록
+# 다양한 키워드로 수집해서 종합 트렌드를 만듭니다
+TREND_QUERIES = ["뉴스", "정치", "경제", "사회", "연예", "스포츠", "기술", "국제"]
+
+
 def fetch_google_news_multi_sections(max_total: int = 200) -> List[Dict[str, Any]]:
     """
-    구글 뉴스 여러 섹션 RSS를 순회하며 기사 정보를 수집합니다.
+    네이버 뉴스 검색 API로 여러 키워드의 기사를 수집합니다. (Google RSS 대체)
     """
+    import os as _os
+
+    if not NAVER_CLIENT_ID or not NAVER_CLIENT_SECRET:
+        print("### NAVER API KEY 미설정 ###")
+        return []
+
+    headers = {
+        "X-Naver-Client-Id": NAVER_CLIENT_ID,
+        "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
+    }
+
     items: List[Dict[str, Any]] = []
     seen = set()
+    per_query = max(10, max_total // len(TREND_QUERIES))
 
-    for url in SECTION_URLS:
-        feed = fetch_rss(url)
+    for query in TREND_QUERIES:
+        if len(items) >= max_total:
+            break
+        try:
+            resp = requests.get(
+                "https://openapi.naver.com/v1/search/news.json",
+                headers=headers,
+                params={"query": query, "display": min(100, per_query), "start": 1, "sort": "date"},
+                timeout=15,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+        except Exception as e:
+            print(f"### Naver News fetch error ({query}): {e}")
+            continue
 
-        for entry in feed.entries:
-            link = entry.get("link", "")
-            published = entry.get("published", "")
+        for item in data.get("items", []):
+            title = clean_html(item.get("title", ""))
+            summary = clean_html(item.get("description", ""))
+            link = item.get("originallink") or item.get("link", "")
+            published = item.get("pubDate", "")
 
-            # source는 실제 매체명 정리에 사용
-            source = getattr(entry, "source", {}).get("title", "") if hasattr(entry, "source") else ""
-            source = clean_html(source)
+            title = strip_source_suffix(title)
+            summary = strip_source_suffix(summary)
 
-            # 제목/요약 기본 정리
-            raw_title = clean_html(entry.get("title", ""))
-            raw_summary = clean_html(entry.get("summary", ""))
-
-            # 1차: 제목/요약 끝 매체 꼬리표 제거
-            title = strip_source_suffix(raw_title)
-            summary = strip_source_suffix(raw_summary)
-
-            # 2차: source 값을 활용한 제거
-            title = remove_source_mentions(title, source)
-            summary = remove_source_mentions(summary, source)
-
-            key = (link.split("?")[0], title)
+            key = (link, title)
             if key in seen:
                 continue
-
             seen.add(key)
 
             items.append({
@@ -292,11 +309,11 @@ def fetch_google_news_multi_sections(max_total: int = 200) -> List[Dict[str, Any
                 "summary": summary,
                 "link": link,
                 "published": published,
-                "source": source,
+                "source": "",
             })
 
             if len(items) >= max_total:
-                return items
+                break
 
     return items[:max_total]
 
