@@ -12,6 +12,7 @@ import html
 import csv
 import base64
 import urllib.parse
+import requests  # requirements.txt에 추가 필요
 
 import feedparser
 from bs4 import BeautifulSoup
@@ -273,8 +274,19 @@ def fetch_google_news_ko(query: Optional[str], max_items: int = 100) -> List[Dic
     else:
         q = urllib.parse.quote(query)
         rss_url = f"https://news.google.com/rss/search?q={q}&hl=ko&gl=KR&ceid=KR:ko"
+        
+    # ↓ 이 부분 추가
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    }
+    try:
+        resp = requests.get(rss_url, headers=headers, timeout=15)
+        resp.raise_for_status()
+        feed = feedparser.parse(resp.text)
+    except Exception as e:
+        print(f"### RSS fetch error: {e}")
+        return []
 
-    feed = feedparser.parse(rss_url)
     items: List[Dict[str, Any]] = []
     seen = set()
 
