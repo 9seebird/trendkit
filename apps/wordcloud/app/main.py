@@ -11,10 +11,7 @@ import re
 import html
 import csv
 import base64
-import urllib.parse
-
 import requests
-import feedparser
 from bs4 import BeautifulSoup
 from wordcloud import WordCloud
 
@@ -235,6 +232,10 @@ def is_noise_token(token: str) -> bool:
     if HEX_RE.fullmatch(t):
         return True
 
+    # 불용어 파일 기반 제거
+    if tl in STOPWORDS_BASE:
+        return True
+
     # 코드 내 하드 차단 토큰
     if t in HARD_BLOCK_TOKENS or tl in HARD_BLOCK_TOKENS:
         return True
@@ -271,9 +272,12 @@ NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
 NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
 
 
-def fetch_google_news_ko(query: Optional[str], max_items: int = 100) -> List[Dict[str, Any]]:
+def fetch_naver_news(query: Optional[str], max_items: int = 100) -> List[Dict[str, Any]]:
     """
-    네이버 뉴스 검색 API로 기사를 수집합니다. (Google RSS 대체)
+    네이버 뉴스 검색 API로 검색어 관련 기사를 수집합니다.
+    - display는 API 허용 최대 100개까지 사용
+    - start를 증가시켜 여러 페이지를 가져옵니다.
+    - originallink/link/title을 정규화해 중복 기사를 줄입니다.
     """
     if not query:
         return []
@@ -292,12 +296,12 @@ def fetch_google_news_ko(query: Optional[str], max_items: int = 100) -> List[Dic
     start = 1
     display = min(100, max_items)
 
-    while len(items) < max_items:
+    while len(items) < max_items and start <= 1000:
         try:
             resp = requests.get(
                 "https://openapi.naver.com/v1/search/news.json",
                 headers=headers,
-                params={"query": query, "display": display, "start": start, "sort": "date"},
+                params={"query": query, "display": min(display, max_items - len(items)), "start": start, "sort": "date"},
                 timeout=15,
             )
             resp.raise_for_status()
@@ -319,7 +323,9 @@ def fetch_google_news_ko(query: Optional[str], max_items: int = 100) -> List[Dic
             title = strip_source_suffix(title)
             summary = strip_source_suffix(summary)
 
-            key = (link, title)
+            normalized_link = (link or "").split("?")[0].rstrip("/")
+            normalized_title = re.sub(r"\s+", " ", title).strip().lower()
+            key = normalized_link or normalized_title
             if key in seen:
                 continue
             seen.add(key)
@@ -342,6 +348,10 @@ def fetch_google_news_ko(query: Optional[str], max_items: int = 100) -> List[Dic
     return items
 
 
+# 기존 배포/호출 코드와의 호환을 위한 별칭
+fetch_google_news_ko = fetch_naver_news
+
+
 # =========================================================
 # 워드클라우드 생성
 # =========================================================
@@ -360,7 +370,9 @@ def build_wordcloud(
         width=width,
         height=height,
         background_color="white",
-        font_path=font_path
+        font_path=font_path,
+        max_words=200,
+        collocations=False,
     ).generate_from_frequencies(freq)
 
     return wc, freq
@@ -373,7 +385,7 @@ def build_wordcloud(
 # - extra_stopwords는 콤마(,) 구분 입력 지원
 # =========================================================
 def compute_tokens_and_freq(query: str, extra_stopwords: Optional[str], max_items: int):
-    items = fetch_google_news_ko(query, max_items=max_items)
+    items = fetch_naver_news(query, max_items=max_items)
 
     texts: List[str] = []
     for item in items:
@@ -400,7 +412,7 @@ def compute_tokens_and_freq(query: str, extra_stopwords: Optional[str], max_item
 # =========================================================
 # FastAPI 앱 설정
 # =========================================================
-app = FastAPI(title="WordCloud Service", version="1.0.0")
+app = FastAPI(title="Naver News WordCloud Service", version="1.0.0")
 app.mount("/static", StaticFiles(directory=str(STATIC_ROOT)), name="static")
 
 pages = APIRouter()
@@ -558,7 +570,7 @@ def export_articles_csv(
     """
     수집한 기사 목록(title, summary, link, source, published)을 CSV로 다운로드합니다.
     """
-    items = fetch_google_news_ko(query, max_items=max_items)
+    items = fetch_naver_news(query, max_items=max_items)
 
     csv_io = StringIO()
     fieldnames = ["title", "summary", "link", "source", "published"]
