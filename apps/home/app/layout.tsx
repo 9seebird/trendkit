@@ -5,11 +5,9 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "../styles/globals.css";
 
-// DM Sans 하나만 next/font로 로드 → 자동 self-hosted, 성능 최적
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  // CSS 변수로 노출 → globals.css의 --font-sans에서 사용
   variable: "--font-sans",
   display: "swap",
 });
@@ -26,6 +24,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" className={dmSans.variable}>
       <head>
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0SPX7FT4J" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-J0SPX7FT4J');
+            `,
+          }}
+        />
+        {/* End Google Analytics */}
         {adsenseClientId ? (
           <script
             async
