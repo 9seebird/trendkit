@@ -11,11 +11,10 @@ type Notice = {
   content: string;
   date: string;
   isPublished: boolean;
-  isPinned?: boolean;
-  order?: number;
+  isPinned: boolean;
+  order: number;
   createdAt: string;
   updatedAt: string;
-  order: number;
 };
 
 type Inquiry = {
