@@ -237,7 +237,11 @@ export default function AdminPage() {
       description: "선택한 공지사항 내용이 작성 영역에 불러와집니다.",
       confirmText: "수정하기",
       onConfirm: () => {
-        setNoticeForm(item);
+        setNoticeForm({
+          ...item,
+          isPinned: Boolean(item.isPinned),
+          order: typeof item.order === "number" ? item.order : 0,
+        });
         showToast("공지사항을 수정 모드로 불러왔습니다.");
         window.scrollTo({ top: 0, behavior: "smooth" });
       },
