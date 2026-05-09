@@ -2,6 +2,7 @@
 // ★ 폰트: next/font로 DM Sans만 관리 (self-hosted, 중복 로딩 없음)
 // ★ globals.css의 Google Fonts @import는 제거됨
 import type { Metadata } from "next";
+import Script from "next/script";
 import { DM_Sans } from "next/font/google";
 import "../styles/globals.css";
 
@@ -25,22 +26,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className={dmSans.variable}>
       <head>
         {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0SPX7FT4J" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-J0SPX7FT4J');
-            `,
-          }}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-J0SPX7FT4J"
+          strategy="afterInteractive"
         />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-J0SPX7FT4J');
+          `}
+        </Script>
         {/* End Google Analytics */}
         {adsenseClientId ? (
-          <script
-            async
+          <Script
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+            strategy="afterInteractive"
             crossOrigin="anonymous"
           />
         ) : null}

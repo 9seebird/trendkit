@@ -1,0 +1,54 @@
+{
+  "notices": [
+    {
+      "id": "notice_2",
+      "tag": "예정",
+      "tagColor": "#fef3c7",
+      "tagText": "#92400e",
+      "title": "PDF 변환기 5월 출시",
+      "content": "PDF 관련 기능을 순차적으로 개선할 예정입니다.",
+      "date": "2026.05.05",
+      "isPublished": true,
+      "createdAt": "2026-04-21T00:00:00.000Z",
+      "updatedAt": "2026-05-09T05:15:10.555Z",
+      "isPinned": false,
+      "order": 0
+    },
+    {
+      "id": "notice_1",
+      "tag": "공지",
+      "tagColor": "#dcfce7",
+      "tagText": "#15803d",
+      "title": "TrendKit 서비스 정식 오픈!",
+      "content": "TrendKit 서비스가 정식 오픈했습니다.",
+      "date": "2026.04.21",
+      "isPublished": true,
+      "createdAt": "2026-04-21T00:00:00.000Z",
+      "updatedAt": "2026-04-21T00:00:00.000Z",
+      "isPinned": false,
+      "order": 1
+    }
+  ],
+  "inquiries": [
+    {
+      "id": "inquiry_1778304996029_2r5u4zv",
+      "name": "ㅇㅇㅇ",
+      "email": "22@naver.com",
+      "type": "버그 신고",
+      "message": "dasdsad",
+      "status": "read",
+      "createdAt": "2026-05-09T05:36:36.027Z",
+      "updatedAt": "2026-05-09T05:40:53.393Z"
+    },
+    {
+      "id": "inquiry_1778304985312_796uxb9",
+      "name": "홍길동",
+      "email": "bonse88@naver.com",
+      "type": "기능 요청",
+      "message": "버그 신고",
+      "status": "done",
+      "createdAt": "2026-05-09T05:36:25.307Z",
+      "updatedAt": "2026-05-09T05:40:54.828Z"
+    }
+  ]
+}
