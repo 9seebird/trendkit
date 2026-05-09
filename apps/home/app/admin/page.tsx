@@ -15,6 +15,7 @@ type Notice = {
   order?: number;
   createdAt: string;
   updatedAt: string;
+  order: number;
 };
 
 type Inquiry = {
@@ -70,6 +71,7 @@ const emptyNotice = {
   date: "",
   isPublished: true,
   isPinned: false,
+  order: 0,
 };
 
 export default function AdminPage() {
