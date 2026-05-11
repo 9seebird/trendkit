@@ -5,58 +5,58 @@ import type { CSSProperties } from "react";
 
 declare global {
   interface Window {
-    adsbygoogle?: unknown[];
+    kakaoAdfitLoaded?: boolean;
   }
 }
 
-type AdSenseAdProps = {
-  slot?: string;
+type AdFitAdProps = {
+  adUnit?: string;
+  width?: number;
+  height?: number;
   label?: string;
   className?: string;
   style?: CSSProperties;
 };
 
-export default function AdSenseAd({
-  slot = process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID,
+export default function AdFitAd({
+  adUnit = "DAN-BjHyHeIJGxfFhjVt",
+  width = 728,
+  height = 90,
   label = "Advertisement",
   className = "",
   style,
-}: AdSenseAdProps) {
-  const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
-
+}: AdFitAdProps) {
   useEffect(() => {
-    if (!client || !slot) return;
-
-    try {
-      window.adsbygoogle = window.adsbygoogle || [];
-      window.adsbygoogle.push({});
-    } catch (error) {
-      console.warn("AdSense failed to initialize", error);
-    }
-  }, [client, slot]);
-
-  if (!client || !slot) return null;
+    // SDK 중복 로드 방지
+    if (window.kakaoAdfitLoaded) return;
+    window.kakaoAdfitLoaded = true;
+    const script = document.createElement("script");
+    script.src = "//t1.kakaocdn.net/kas/static/ba.min.js";
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
 
   return (
     <div
-      className={`adsense-wrap ${className}`.trim()}
+      className={`adfit-wrap ${className}`.trim()}
       aria-label={label}
       style={{
         width: "100%",
         maxWidth: "100%",
-        margin: "24px auto",
-        textAlign: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         overflow: "hidden",
+        minHeight: `${height}px`,
         ...style,
       }}
     >
       <ins
-        className="adsbygoogle"
+        className="kakao_ad_area"
         style={{ display: "block" }}
-        data-ad-client={client}
-        data-ad-slot={slot}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
+        data-ad-unit={adUnit}
+        data-ad-width={String(width)}
+        data-ad-height={String(height)}
       />
     </div>
   );

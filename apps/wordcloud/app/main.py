@@ -18,7 +18,8 @@ from wordcloud import WordCloud
 from fastapi import FastAPI, Query, APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-
+from dotenv import load_dotenv
+load_dotenv()
 
 # =========================================================
 # 기본 경로 설정

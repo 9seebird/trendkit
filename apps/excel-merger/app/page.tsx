@@ -2,14 +2,13 @@ import ExcelUploader from "@/app/components/ExcelUploader";
 import ManualModal from "@/app/components/ManualModal";
 import DarkModeToggle from "@/app/components/ExcelUploader/DarkModeToggle";
 import Link from "next/link";
-import AdSenseAd from "@/app/components/AdSenseAd";
+import AdFitAd from "@/app/components/AdSenseAd";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <header className="bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {/* 메인 홈으로 돌아가는 링크 */}
           <Link
             href="https://trendkit.app"
             className="text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex items-center gap-1"
@@ -26,20 +25,19 @@ export default function Home() {
           <ManualModal />
         </div>
       </header>
+
+      {/* 상단 광고 - 헤더 바로 아래 */}
+      <div className="w-full bg-white dark:bg-slate-900 border-b dark:border-slate-800">
+        <div className="container mx-auto px-4 py-2 flex justify-center">
+          <AdFitAd
+            adUnit="DAN-BjHyHeIJGxfFhjVt"
+            width={728} height={90}
+          />
+        </div>
+      </div>
+
       <main className="container mx-auto py-8 px-4">
-        <div className="excel-top-ad mb-6">
-          <AdSenseAd label="엑셀 병합기 상단 광고" />
-        </div>
-
         <ExcelUploader />
-
-        <div className="excel-mid-ad my-6">
-          <AdSenseAd label="엑셀 병합기 중단 광고" />
-        </div>
-
-        <div className="excel-bottom-ad mt-6">
-          <AdSenseAd label="엑셀 병합기 하단 광고" />
-        </div>
       </main>
     </div>
   );

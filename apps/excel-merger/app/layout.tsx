@@ -11,8 +11,6 @@ export const metadata: Metadata = {
   icons: { icon: '/favicon.ico' },
 };
 
-const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
@@ -29,16 +27,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
-        {/* End Google Analytics */}
-        {adsenseClientId ? (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-            crossOrigin="anonymous"
-          />
-        ) : null}
+        {/* Kakao AdFit SDK */}
+        <script async src="//t1.kakaocdn.net/kas/static/ba.min.js" />
       </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

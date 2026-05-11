@@ -15,7 +15,8 @@ from bs4 import BeautifulSoup
 from fastapi import FastAPI, Query, APIRouter, Response
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-
+from dotenv import load_dotenv
+load_dotenv()
 
 # =========================================================
 # 기본 설정
