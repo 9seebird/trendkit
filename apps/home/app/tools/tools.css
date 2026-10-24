@@ -1,0 +1,89 @@
+/* 생활·업무 도구 공통 스타일 (tk- 접두사) */
+.tk-wrap { max-width: 920px; margin: 0 auto; padding: calc(var(--nav-height) + 24px) 20px 40px; }
+.tk-crumb { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+.tk-crumb a { color: var(--text-secondary); text-decoration: none; }
+.tk-crumb a:hover { color: var(--brand); }
+.tk-title { font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.25; margin: 0 0 10px; }
+.tk-lead { font-size: 15.5px; color: var(--text-secondary); line-height: 1.7; margin: 0 0 24px; word-break: keep-all; }
+
+.tk-panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+@media (max-width: 600px) { .tk-panel { padding: 18px; } .tk-wrap { padding-left: 16px; padding-right: 16px; } }
+
+.tk-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.tk-field { display: flex; flex-direction: column; gap: 6px; }
+.tk-field > span, .tk-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.tk-field small { font-size: 12px; color: var(--text-muted); }
+.tk-input, .tk-select, .tk-textarea {
+  width: 100%; font: inherit; font-size: 15px; color: var(--text-primary);
+  background: var(--bg-page); border: 1.5px solid var(--border); border-radius: var(--radius-md);
+  padding: 11px 13px; outline: none;
+}
+.tk-input:focus, .tk-select:focus, .tk-textarea:focus { border-color: var(--brand); background: #fff; }
+.tk-textarea { min-height: 240px; resize: vertical; line-height: 1.7; }
+.tk-seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.tk-seg button {
+  font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--border); background: var(--bg-surface); color: var(--text-secondary);
+  border-radius: var(--radius-full); padding: 7px 14px;
+}
+.tk-seg button[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-light); color: var(--brand-dark); }
+.tk-btn {
+  font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: var(--radius-md);
+  padding: 11px 18px; border: 1.5px solid var(--text-primary); background: var(--text-primary); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+}
+.tk-btn.ghost { background: var(--bg-surface); color: var(--text-primary); border-color: var(--border-strong); }
+.tk-btn:disabled { opacity: .5; cursor: default; }
+
+/* 결과 숫자 */
+.tk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 18px; }
+.tk-stat { background: var(--bg-page); border-radius: var(--radius-md); padding: 14px 16px; }
+.tk-stat b { display: block; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tk-stat span { font-size: 12.5px; color: var(--text-muted); }
+.tk-stat.main { background: var(--brand-light); }
+.tk-stat.main b { color: var(--brand-dark); font-size: 26px; }
+
+.tk-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 14px; }
+.tk-table th, .tk-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+.tk-table td.n, .tk-table th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.tk-table tr.total td { font-weight: 800; border-top: 2px solid var(--text-primary); }
+.tk-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin-top: 14px; }
+
+/* 설명 글 (검색·광고 품질용 본문) */
+.tk-article { margin-top: 36px; line-height: 1.8; font-size: 15px; color: var(--text-primary); word-break: keep-all; }
+.tk-article h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin: 34px 0 10px; }
+.tk-article h3 { font-size: 16px; font-weight: 700; margin: 20px 0 6px; }
+.tk-article p, .tk-article li { color: var(--text-secondary); }
+.tk-article ul, .tk-article ol { padding-left: 20px; }
+.tk-article code { background: var(--bg-muted); padding: 1px 6px; border-radius: 5px; font-size: .92em; }
+
+.tk-faq { margin-top: 30px; }
+.tk-faq details { border-bottom: 1px solid var(--border); padding: 14px 2px; }
+.tk-faq summary { cursor: pointer; font-weight: 700; font-size: 15px; list-style: none; }
+.tk-faq summary::-webkit-details-marker { display: none; }
+.tk-faq summary::before { content: "Q. "; color: var(--brand); }
+.tk-faq p { margin: 8px 0 0; color: var(--text-secondary); line-height: 1.75; font-size: 14.5px; white-space: pre-line; }
+
+/* 관련 도구 */
+.tk-related { margin-top: 40px; }
+.tk-related h2 { font-size: 18px; font-weight: 800; margin: 0 0 12px; }
+.tk-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.tk-card {
+  display: flex; gap: 12px; align-items: flex-start; text-decoration: none; color: inherit;
+  background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px;
+  transition: border-color .15s, transform .15s;
+}
+.tk-card:hover { border-color: var(--brand); transform: translateY(-2px); }
+.tk-card .ic { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-size: 20px; flex-shrink: 0; }
+.tk-card b { display: block; font-size: 15px; margin-bottom: 3px; }
+.tk-card small { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+.tk-drop {
+  border: 2px dashed var(--border-strong); border-radius: var(--radius-lg); padding: 34px 16px; text-align: center;
+  background: var(--bg-page); cursor: pointer; color: var(--text-secondary);
+}
+.tk-drop.on { border-color: var(--brand); background: var(--brand-light); }
+.tk-progress { height: 8px; background: var(--bg-muted); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.tk-progress i { display: block; height: 100%; background: var(--brand); transition: width .2s; }
+.tk-progress i.over { background: #dc2626; }
+.tk-warn { color: #b91c1c; font-weight: 700; }

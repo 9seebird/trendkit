@@ -15,6 +15,7 @@ const FOOTER_LINKS: Record<string, { label: string; href: string; external?: boo
     { label: "키워드 트렌드", href: URLS.trends, external: true },
     { label: "PDF 편집기", href: URLS.pdf, external: true },
     { label: "반나절 여행 코스", href: URLS.trip, external: true },
+    { label: "생활·업무 도구", href: "/tools" },
   ],
   고객지원: [
     { label: "공지사항", href: "/contact#notice" },

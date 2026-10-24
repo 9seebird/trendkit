@@ -6,6 +6,7 @@ import Footer from "./_components/Footer";
 import AdSenseAd from "./_components/AdSenseAd";
 import { URLS } from "@/lib/urls";
 import { SITE, SITE_TOOLS } from "@/lib/site";
+import { TOOLS } from "@/lib/tools";
 
 // 구조화 데이터 — 검색 결과에서 사이트 이름·도구 목록을 알아보게 (schema.org)
 const JSON_LD = {
@@ -347,6 +348,28 @@ export default function HomePage() {
               <Link href="/services" className="btn btn-outline">
                 모든 서비스 보기
               </Link>
+            </div>
+          </div>
+        </section>
+        {/* 생활·업무 도구 — /tools 로 들어가는 길 (검색 노출에 내부 링크가 도움된다) */}
+        <section className="section-pad" style={{ paddingTop: 0 }}>
+          <div className="container-main">
+            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <span className="section-eyebrow">Everyday Tools</span>
+              <h2 className="section-title">생활·업무 도구</h2>
+              <p className="section-desc" style={{ margin: "0 auto" }}>자주 찾는 계산과 변환을 설치 없이 바로</p>
+            </div>
+            <div className="grid-cards">
+              {TOOLS.map((t) => (
+                <Link key={t.slug} href={`/tools/${t.slug}`} className="card"
+                      style={{ textDecoration: "none", color: "inherit", display: "flex", gap: "14px", alignItems: "flex-start", padding: "20px" }}>
+                  <span className="icon-box" style={{ background: t.iconBg, marginBottom: 0, width: 42, height: 42, fontSize: 20 }}>{t.icon}</span>
+                  <span>
+                    <b style={{ display: "block", fontSize: "15px", marginBottom: "4px" }}>{t.name}</b>
+                    <span style={{ fontSize: "13.5px", color: "var(--text-secondary)", lineHeight: 1.55 }}>{t.short}</span>
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
