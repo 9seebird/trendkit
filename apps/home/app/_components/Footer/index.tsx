@@ -16,7 +16,7 @@ const FOOTER_LINKS: Record<string, { label: string; href: string; external?: boo
     { label: "비전", href: "/about#vision" },
   ],
   고객지원: [
-    { label: "공지사항", href: "/contact#notice" },
+    { label: "공지사항", href: "/notices" },
     { label: "문의하기", href: "/contact#inquiry" },
   ],
   정책: [
