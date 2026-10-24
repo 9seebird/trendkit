@@ -16,8 +16,8 @@ type Notice = {
 };
 
 const FALLBACK_NOTICES: Notice[] = [
+  { id: "fallback_2", tag: "출시", tagColor: "#dbeafe", tagText: "#1d4ed8", title: "PDF 편집기 정식 출시!", content: "PDF 편집·병합, 문서 수정과 이미지 변환을 브라우저에서 바로 쓸 수 있어요.", date: "2026.10.24", isPublished: true },
   { id: "fallback_1", tag: "공지", tagColor: "#dcfce7", tagText: "#15803d", title: "TrendKit 서비스 정식 오픈!", content: "", date: "2026.04.21", isPublished: true },
-  { id: "fallback_2", tag: "예정", tagColor: "#fef3c7", tagText: "#92400e", title: "PDF 변환기 5월 출시 예정", content: "", date: "2026.04.21", isPublished: true },
 ];
 
 const COMPANY_INFO = {

@@ -2,15 +2,15 @@
   "notices": [
     {
       "id": "notice_2",
-      "tag": "예정",
-      "tagColor": "#fef3c7",
-      "tagText": "#92400e",
-      "title": "PDF 변환기 5월 출시",
-      "content": "PDF 관련 기능을 순차적으로 개선할 예정입니다.",
-      "date": "2026.05.05",
+      "tag": "출시",
+      "tagColor": "#dbeafe",
+      "tagText": "#1d4ed8",
+      "title": "PDF 편집기 정식 출시!",
+      "content": "PDF 편집·병합, 문서 수정과 이미지 변환을 브라우저에서 바로 쓸 수 있어요.",
+      "date": "2026.10.24",
       "isPublished": true,
       "createdAt": "2026-04-21T00:00:00.000Z",
-      "updatedAt": "2026-05-09T05:15:10.555Z",
+      "updatedAt": "2026-10-24T00:00:00.000Z",
       "isPinned": false,
       "order": 0
     },
