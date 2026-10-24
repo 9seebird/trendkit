@@ -15,4 +15,5 @@ export const URLS = {
   wordcloud: process.env.NEXT_PUBLIC_URL_WORDCLOUD ?? "https://wordcloud.trendkit.app",
   trends:    process.env.NEXT_PUBLIC_URL_TRENDS    ?? "https://keywords.trendkit.app",
   pdf:       process.env.NEXT_PUBLIC_URL_PDF ?? "https://pdf.trendkit.app",
+  trip:      process.env.NEXT_PUBLIC_URL_TRIP      ?? "https://trip.trendkit.app",
 } as const;

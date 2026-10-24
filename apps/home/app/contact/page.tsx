@@ -16,6 +16,7 @@ type Notice = {
 };
 
 const FALLBACK_NOTICES: Notice[] = [
+  { id: "fallback_3", tag: "출시", tagColor: "#dbeafe", tagText: "#1d4ed8", title: "반나절 여행 코스 출시!", content: "가고 싶은 곳을 말로 적으면 장소와 근처 반나절 코스를 찾아 드려요. trip.trendkit.app", date: "2026.10.24", isPublished: true },
   { id: "fallback_2", tag: "출시", tagColor: "#dbeafe", tagText: "#1d4ed8", title: "PDF 편집기 정식 출시!", content: "PDF 편집·병합, 문서 수정과 이미지 변환을 브라우저에서 바로 쓸 수 있어요.", date: "2026.10.24", isPublished: true },
   { id: "fallback_1", tag: "공지", tagColor: "#dcfce7", tagText: "#15803d", title: "TrendKit 서비스 정식 오픈!", content: "", date: "2026.04.21", isPublished: true },
 ];

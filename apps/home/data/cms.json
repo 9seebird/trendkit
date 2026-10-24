@@ -1,6 +1,20 @@
 {
   "notices": [
     {
+      "id": "notice_3",
+      "tag": "출시",
+      "tagColor": "#dbeafe",
+      "tagText": "#1d4ed8",
+      "title": "반나절 여행 코스 출시!",
+      "content": "가고 싶은 곳을 말로 적으면 장소와 근처 반나절 코스를 찾아 드려요. trip.trendkit.app",
+      "date": "2026.10.24",
+      "isPublished": true,
+      "createdAt": "2026-10-24T00:00:00.000Z",
+      "updatedAt": "2026-10-24T00:00:00.000Z",
+      "isPinned": false,
+      "order": 0
+    },
+    {
       "id": "notice_2",
       "tag": "출시",
       "tagColor": "#dbeafe",

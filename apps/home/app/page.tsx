@@ -45,6 +45,17 @@ const HERO_TOOLS = [
     status: "live" as const,
     external: true,
   },
+  {
+    icon: "🧭",
+    iconBg: "#ccfbf1",
+    category: "여행",
+    name: "반나절 여행 코스",
+    desc: "“비 오는 날 아이랑 갈 만한 곳”처럼 말하면 갈 곳과 근처 반나절 코스를 찾아 줘요",
+    href: URLS.trip,
+    status: "live" as const,
+    external: true,
+    tags: ["여행", "AI 검색", "코스"],
+  },
 ];
 
 export default function HomePage() {

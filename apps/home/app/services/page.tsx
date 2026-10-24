@@ -54,6 +54,17 @@ const TOOLS = [
     external: true,
     tags: ["트렌드", "키워드", "뉴스 분석"],
   },
+  {
+    icon: "🧭",
+    iconBg: "#ccfbf1",
+    category: "여행",
+    name: "반나절 여행 코스",
+    desc: "“비 오는 날 아이랑 갈 만한 곳”처럼 말하면 갈 곳과 근처 반나절 코스를 찾아 줘요",
+    href: URLS.trip,
+    status: "live" as const,
+    external: true,
+    tags: ["여행", "AI 검색", "코스"],
+  },
 ];
 
 /* ============================================================
