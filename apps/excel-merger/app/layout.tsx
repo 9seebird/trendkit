@@ -27,6 +27,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        {/* Google AdSense (자동 광고) — trendkit.app 계정 승인으로 하위 도메인까지 쓴다 */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ? (
+          <>
+            <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
+            <script async crossOrigin="anonymous"
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`} />
+          </>
+        ) : null}
         {/* Kakao AdFit SDK */}
         <script async src="//t1.kakaocdn.net/kas/static/ba.min.js" />
       </head>

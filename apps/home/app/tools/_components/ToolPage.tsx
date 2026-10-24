@@ -5,7 +5,9 @@ import Link from "next/link";
 import Header from "../../_components/Header";
 import Footer from "../../_components/Footer";
 import AdSenseAd from "../../_components/AdSenseAd";
-import { TOOLS, toolBySlug } from "@/lib/tools";
+import { toolBySlug } from "@/lib/tools";
+import { CATALOG_SORTED } from "@/lib/catalog";
+import ToolCard from "../../_components/ToolCard";
 import { SITE } from "@/lib/site";
 
 export type FAQ = { q: string; a: string };
@@ -18,12 +20,14 @@ export default function ToolPage({
   children: React.ReactNode;
   article: React.ReactNode;
   faq: FAQ[];
-  related?: string[];          // 관련 도구 slug (없으면 같은 묶음 → 나머지 순)
+  related?: string[];          // 관련 도구 key (사이트 안 도구는 slug, 외부는 pdf·trip 등). 없으면 같은 분류 → 추천 순
 }) {
   const tool = toolBySlug(slug);
-  const others = TOOLS.filter((t) => t.slug !== slug);
-  const rel = (related?.map((s) => others.find((t) => t.slug === s)).filter(Boolean) as typeof TOOLS | undefined)
-    ?? [...others.filter((t) => t.group === tool.group), ...others.filter((t) => t.group !== tool.group)];
+  const others = CATALOG_SORTED.filter((c) => c.key !== slug);
+  const picked = (related ?? []).map((k) => others.find((c) => c.key === k)).filter((c): c is (typeof others)[number] => !!c);
+  // 고른 것 → 같은 분류 → 추천 순으로 4개 (외부 서비스도 섞어 사이트 전체로 이어지게)
+  const rel = [...picked, ...others.filter((c) => c.category === tool.group), ...others]
+    .filter((c, i, a) => a.findIndex((x) => x.key === c.key) === i).slice(0, 4);
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -39,7 +43,7 @@ export default function ToolPage({
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "TrendKit", item: SITE.url },
+          { "@type": "ListItem", position: 1, name: "홈", item: SITE.url },
           { "@type": "ListItem", position: 2, name: "도구", item: `${SITE.url}/tools` },
           { "@type": "ListItem", position: 3, name: tool.name, item: `${SITE.url}/tools/${slug}` },
         ],
@@ -52,7 +56,7 @@ export default function ToolPage({
       <Header />
       <main className="tk-wrap">
         <nav className="tk-crumb" aria-label="현재 위치">
-          <Link href="/">TrendKit</Link> › <Link href="/tools">도구</Link> › {tool.name}
+          <Link href="/">홈</Link> › <Link href="/tools">도구</Link> › {tool.name}
         </nav>
         <h1 className="tk-title">{tool.icon} {tool.name}</h1>
         <p className="tk-lead">{lead}</p>
@@ -78,13 +82,9 @@ export default function ToolPage({
         <section className="tk-related">
           <h2>함께 쓰면 좋은 도구</h2>
           <div className="tk-cards">
-            {rel.slice(0, 4).map((t) => (
-              <Link key={t.slug} href={`/tools/${t.slug}`} className="tk-card">
-                <span className="ic" style={{ background: t.iconBg }}>{t.icon}</span>
-                <span><b>{t.name}</b><small>{t.short}</small></span>
-              </Link>
-            ))}
+            {rel.map((c) => <ToolCard key={c.key} item={c} compact />)}
           </div>
+          <p style={{ marginTop: 14 }}><Link href="/tools" style={{ color: "var(--brand)", fontWeight: 700, textDecoration: "none" }}>전체 도구 보기 →</Link></p>
         </section>
       </main>
       <Footer />

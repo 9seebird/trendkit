@@ -1,21 +1,19 @@
 import Link from "next/link";
-import { URLS } from "@/lib/urls";
+import { CATALOG, FEATURED } from "@/lib/catalog";
 
 /* =========================
    링크 데이터
    ========================= */
+// 도구는 전부 나열하지 않고 추천 6개 + 전체 보기 (도구가 늘어도 푸터 길이가 그대로)
 const FOOTER_LINKS: Record<string, { label: string; href: string; external?: boolean }[]> = {
+  도구: [
+    ...FEATURED.slice(0, 6).map((c) => ({ label: c.name, href: c.href, external: c.external })),
+    { label: `전체 도구 ${CATALOG.length}개 →`, href: "/tools" },
+  ],
   회사: [
+    { label: "홈", href: "/" },
     { label: "소개", href: "/about" },
     { label: "비전", href: "/about#vision" },
-  ],
-  서비스: [
-    { label: "Excel Merger", href: URLS.excel, external: true },
-    { label: "워드클라우드", href: URLS.wordcloud, external: true },
-    { label: "키워드 트렌드", href: URLS.trends, external: true },
-    { label: "PDF 편집기", href: URLS.pdf, external: true },
-    { label: "반나절 여행 코스", href: URLS.trip, external: true },
-    { label: "생활·업무 도구", href: "/tools" },
   ],
   고객지원: [
     { label: "공지사항", href: "/contact#notice" },
@@ -30,7 +28,7 @@ const FOOTER_LINKS: Record<string, { label: string; href: string; external?: boo
 /* =========================
    순서 강제 (중요)
    ========================= */
-const FOOTER_ORDER = ["회사", "서비스", "고객지원", "정책"];
+const FOOTER_ORDER = ["도구", "회사", "고객지원", "정책"];
 
 export default function Footer() {
   return (
@@ -185,8 +183,8 @@ export default function Footer() {
 
           .footer-links-grid {
             flex: 1;
-            grid-template-columns: repeat(2, 200px);
-            gap: 40px 80px;
+            grid-template-columns: repeat(4, auto);
+            gap: 40px 56px;
           }
         }
 

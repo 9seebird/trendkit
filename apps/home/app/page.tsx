@@ -4,9 +4,9 @@ import Link from "next/link";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import AdSenseAd from "./_components/AdSenseAd";
-import { URLS } from "@/lib/urls";
-import { SITE, SITE_TOOLS } from "@/lib/site";
-import { TOOLS } from "@/lib/tools";
+import { SITE } from "@/lib/site";
+import { CATALOG, FEATURED } from "@/lib/catalog";
+import CatalogGrid from "./_components/CatalogGrid";
 
 // 구조화 데이터 — 검색 결과에서 사이트 이름·도구 목록을 알아보게 (schema.org)
 const JSON_LD = {
@@ -16,10 +16,10 @@ const JSON_LD = {
     {
       "@type": "ItemList",
       name: "TrendKit 도구 모음",
-      itemListElement: SITE_TOOLS.map((t, i) => ({
+      itemListElement: CATALOG.map((t, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        item: { "@type": "WebApplication", name: t.name, url: t.url, description: t.desc,
+        item: { "@type": "WebApplication", name: t.name, url: t.external ? t.href : `${SITE.url}${t.href}`, description: t.short,
                 applicationCategory: "UtilitiesApplication", operatingSystem: "Web",
                 offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } },
       })),
@@ -27,57 +27,11 @@ const JSON_LD = {
   ],
 };
 
-const HERO_TOOLS = [
-  {
-    icon: "📊",
-    iconBg: "#dbeafe",
-    name: "Excel Smart Merger",
-    desc: "여러 엑셀 파일을 컬럼 기반으로 병합. 컬럼 매핑, 다운로드까지",
-    href: URLS.excel,
-    status: "live" as const,
-    external: true,
-  },
-    {
-    icon: "📄",
-    iconBg: "#fef3c7",
-    category: "파일 변환",
-    name: "PDF 편집기",
-    desc: "PDF 편집 및 병합, 문서 수정과 이미지 변환 기능",
-    href: URLS.pdf,
-    status: "live" as const,
-    external: true,
-    tags: ["PDF", "변환", "Word"],
-  },
-  {
-    icon: "☁️",
-    iconBg: "#dbeafe",
-    name: "워드클라우드 생성기",
-    desc: "검색어 기반 워드클라우드 생성. 이미지·CSV 다운로드 지원",
-    href: URLS.wordcloud,
-    status: "live" as const,
-    external: true,
-  },
-  {
-    icon: "📈",
-    iconBg: "#dcfce7",
-    name: "키워드 트렌드",
-    desc: "오늘 뉴스 키워드 빈도 분석. 바 차트와 태그 클라우드로 시각화",
-    href: URLS.trends,
-    status: "live" as const,
-    external: true,
-  },
-  {
-    icon: "🧭",
-    iconBg: "#ccfbf1",
-    category: "여행",
-    name: "반나절 여행 코스",
-    desc: "“비 오는 날 아이랑 갈 만한 곳”처럼 말하면 갈 곳과 근처 반나절 코스를 찾아 줘요",
-    href: URLS.trip,
-    status: "live" as const,
-    external: true,
-    tags: ["여행", "AI 검색", "코스"],
-  },
-];
+// 첫 화면 오른쪽 카드 — 추천 도구 4개 (lib/catalog.ts 의 featured 순서)
+const HERO_TOOLS = FEATURED.slice(0, 4).map((c) => ({
+  icon: c.icon, iconBg: c.iconBg, name: c.name, desc: c.short, href: c.href,
+  status: "live" as const, external: c.external,
+}));
 
 export default function HomePage() {
   return (
@@ -161,7 +115,7 @@ export default function HomePage() {
                   className="btn-group"
                   style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}
                 >
-                  <Link href="/services" className="btn btn-dark">
+                  <Link href="/tools" className="btn btn-dark">
                     도구 둘러보기 →
                   </Link>
                   <Link href="/about" className="btn btn-outline">
@@ -259,117 +213,19 @@ export default function HomePage() {
         </div>
 
         {/* ══ 서비스 미리보기 ══ */}
-        <section
-          className="section-pad"
-          style={{ background: "var(--bg-page)" }}
-        >
-          <div className="container-main">
-            <div
-              style={{
-                textAlign: "center",
-                marginBottom: "clamp(32px, 5vw, 52px)",
-              }}
-            >
-              <span className="section-eyebrow">Our Services</span>
-              <h2 className="section-title">생산성 도구 모음</h2>
-              <p className="section-desc" style={{ margin: "0 auto" }}>
-                복잡한 설치 없이 브라우저에서 바로 사용하는 <br /> 웹 기반 도구들
-              </p>
-            </div>
-
-            <div className="grid-cards">
-              {HERO_TOOLS.map((tool) => (
-                <Link
-                  key={tool.name}
-                  href={tool.href}
-                  target={tool.external ? "_blank" : undefined}
-                  rel={tool.external ? "noopener noreferrer" : undefined}
-                  className="card"
-                  style={{
-                    textDecoration: "none",
-                    color: "inherit",
-                    display: "flex",
-                    flexDirection: "column",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                  }}
-                >
-                  <div className="icon-box" style={{ background: tool.iconBg }}>
-                    {tool.icon}
-                  </div>
-                  <h3
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 700,
-                      marginBottom: "10px",
-                    }}
-                  >
-                    {tool.name}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "14px",
-                      color: "var(--text-secondary)",
-                      lineHeight: 1.65,
-                      flex: 1,
-                    }}
-                  >
-                    {tool.desc}
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      marginTop: "20px",
-                      paddingTop: "16px",
-                      borderTop: "1px solid var(--border)",
-                    }}
-                  >
-                    <span
-                      className="badge"
-                      style={{
-                        background: "var(--status-live-bg)",
-                        color: "var(--status-live-text)",
-                      }}
-                    >
-                      Live
-                    </span>
-                    <span
-                      style={{ color: "var(--text-muted)", fontSize: "18px" }}
-                    >
-                      →
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <div style={{ textAlign: "center", marginTop: "40px" }}>
-              <Link href="/services" className="btn btn-outline">
-                모든 서비스 보기
-              </Link>
-            </div>
-          </div>
-        </section>
-        {/* 생활·업무 도구 — /tools 로 들어가는 길 (검색 노출에 내부 링크가 도움된다) */}
-        <section className="section-pad" style={{ paddingTop: 0 }}>
+        {/* 전체 도구 — 분류 탭 + 카드 (도구 목록 페이지와 같은 부품) */}
+        <section className="section-pad">
           <div className="container-main">
             <div style={{ textAlign: "center", marginBottom: "32px" }}>
-              <span className="section-eyebrow">Everyday Tools</span>
-              <h2 className="section-title">생활·업무 도구</h2>
-              <p className="section-desc" style={{ margin: "0 auto" }}>자주 찾는 계산과 변환을 설치 없이 바로</p>
+              <span className="section-eyebrow">All Tools</span>
+              <h2 className="section-title">자주 쓰는 도구 모음</h2>
+              <p className="section-desc" style={{ margin: "0 auto" }}>
+                문서·파일 정리부터 계산기, 뉴스 분석, 여행 코스까지 설치 없이 바로
+              </p>
             </div>
-            <div className="grid-cards">
-              {TOOLS.map((t) => (
-                <Link key={t.slug} href={`/tools/${t.slug}`} className="card"
-                      style={{ textDecoration: "none", color: "inherit", display: "flex", gap: "14px", alignItems: "flex-start", padding: "20px" }}>
-                  <span className="icon-box" style={{ background: t.iconBg, marginBottom: 0, width: 42, height: 42, fontSize: 20 }}>{t.icon}</span>
-                  <span>
-                    <b style={{ display: "block", fontSize: "15px", marginBottom: "4px" }}>{t.name}</b>
-                    <span style={{ fontSize: "13.5px", color: "var(--text-secondary)", lineHeight: 1.55 }}>{t.short}</span>
-                  </span>
-                </Link>
-              ))}
+            <CatalogGrid limit={8} />
+            <div style={{ textAlign: "center", marginTop: "36px" }}>
+              <Link href="/tools" className="btn btn-outline">전체 도구 {CATALOG.length}개 보기</Link>
             </div>
           </div>
         </section>

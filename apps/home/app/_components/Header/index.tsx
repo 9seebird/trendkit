@@ -4,11 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { label: "About",   href: "/about"    },
-  { label: "Service", href: "/services" },
-  { label: "Tools",   href: "/tools"    },
-  { label: "Contact", href: "/contact"  },
+  { label: "홈",   href: "/"        },
+  { label: "도구", href: "/tools"   },
+  { label: "소개", href: "/about"   },
+  { label: "문의", href: "/contact" },
 ];
+
+// 홈("/")은 정확히 같을 때만, 나머지는 하위 주소까지 (도구 → /tools/연봉 계산기도 '도구')
+const isOn = (pathname: string, href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
 export default function Header() {
   const pathname  = usePathname();
@@ -65,7 +68,7 @@ export default function Header() {
           display: "flex", alignItems: "center", gap: "4px",
         }}>
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname.startsWith(item.href);
+            const isActive = isOn(pathname, item.href);
             return (
               <Link key={item.label} href={item.href} style={{
                 padding: "8px 20px",
@@ -100,7 +103,7 @@ export default function Header() {
       {/* 모바일 드로어 */}
       <nav className={`mobile-nav${menuOpen ? " open" : ""}`}>
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = isOn(pathname, item.href);
           return (
             <Link
               key={item.label}

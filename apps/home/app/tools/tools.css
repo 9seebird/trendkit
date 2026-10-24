@@ -67,16 +67,6 @@
 /* 관련 도구 */
 .tk-related { margin-top: 40px; }
 .tk-related h2 { font-size: 18px; font-weight: 800; margin: 0 0 12px; }
-.tk-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
-.tk-card {
-  display: flex; gap: 12px; align-items: flex-start; text-decoration: none; color: inherit;
-  background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px;
-  transition: border-color .15s, transform .15s;
-}
-.tk-card:hover { border-color: var(--brand); transform: translateY(-2px); }
-.tk-card .ic { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-size: 20px; flex-shrink: 0; }
-.tk-card b { display: block; font-size: 15px; margin-bottom: 3px; }
-.tk-card small { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
 
 .tk-drop {
   border: 2px dashed var(--border-strong); border-radius: var(--radius-lg); padding: 34px 16px; text-align: center;

@@ -49,6 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* 네이버 서치어드바이저 소유 확인 — 메타데이터 API 와 별개로 <head> 에 직접 둔다
             (Next 15 는 일부 요청에 메타데이터를 본문 쪽으로 늦게 보내서 네이버 확인기가 못 찾을 수 있다) */}
         <meta name="naver-site-verification" content="36011dc835246b43673663994d590688e1f57687" />
+        {/* 애드센스 사이트 소유 확인 (승인 심사에서 이 태그나 광고 코드를 찾는다) */}
+        {adsenseClientId ? <meta name="google-adsense-account" content={adsenseClientId} /> : null}
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-J0SPX7FT4J"
