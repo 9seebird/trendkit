@@ -527,3 +527,11 @@ body {
 .tk-tabs button[aria-selected="true"] { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
 .tk-tabs button[aria-selected="true"] span { color: rgba(255,255,255,.7); }
 @media (max-width: 600px) { .tk-cards { grid-template-columns: 1fr; gap: 10px; } .tk-card { padding: 14px; } }
+
+/* ══════════════════════════════════════════
+   푸터를 항상 화면 맨 아래에 (내용이 짧은 페이지에서 푸터가 중간에 뜨고 아래가 비지 않게)
+   ══════════════════════════════════════════ */
+body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+body > * { flex-shrink: 0; }
+body > main { flex: 1 0 auto; width: 100%; }
+body > footer { margin-top: auto; }

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Header from "../_components/Header";
+import Footer from "../_components/Footer";
 
 export const metadata: Metadata = {
   title: "이용약관",
@@ -9,11 +11,14 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
+    <>
+    <Header />
     <main
       style={{
+        boxSizing: "border-box",
         maxWidth: "900px",
         margin: "0 auto",
-        padding: "120px 24px 80px",
+        padding: "calc(var(--nav-height) + 24px) 24px 80px",
         color: "#1a1a1a",
         lineHeight: 1.8,
       }}
@@ -202,6 +207,8 @@ export default function TermsPage() {
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }
 

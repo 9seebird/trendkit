@@ -1,5 +1,5 @@
 /* 생활·업무 도구 공통 스타일 (tk- 접두사) */
-.tk-wrap { max-width: 920px; margin: 0 auto; padding: calc(var(--nav-height) + 24px) 20px 40px; }
+.tk-wrap { box-sizing: border-box; width: 100%; max-width: 920px; margin: 0 auto; padding: calc(var(--nav-height) + 24px) 20px 40px; }
 .tk-crumb { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
 .tk-crumb a { color: var(--text-secondary); text-decoration: none; }
 .tk-crumb a:hover { color: var(--brand); }
