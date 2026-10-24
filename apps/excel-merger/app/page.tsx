@@ -29,10 +29,7 @@ export default function Home() {
       {/* 상단 광고 - 헤더 바로 아래 */}
       <div className="w-full bg-white dark:bg-slate-900 border-b dark:border-slate-800">
         <div className="container mx-auto px-4 py-2 flex justify-center">
-          <AdFitAd
-            adUnit="DAN-BjHyHeIJGxfFhjVt"
-            width={728} height={90}
-          />
+          <AdFitAd />
         </div>
       </div>
 

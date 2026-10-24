@@ -314,10 +314,13 @@
       </div>
       <!-- 하단 광고 (그리드 아래) -->
       <div class="adfit-wrap" style="margin-top:20px; margin-bottom:40px;">
-        <ins class="kakao_ad_area"
-          data-ad-unit="DAN-BjHyHeIJGxfFhjVt"
-          data-ad-width="728"
-          data-ad-height="90"></ins>
+        <div class="adfit-slot"></div>
+        <script>
+          // 화면 크기에 맞는 애드핏 광고단위(PC 728x90 / 모바일 320x100)를 넣습니다.
+          (function(){var s=document.currentScript.previousElementSibling,m=window.matchMedia("(max-width: 767px)").matches,i=document.createElement("ins");
+          i.className="kakao_ad_area";i.style.display="block";i.setAttribute("data-ad-unit",m?"DAN-TcVxmySMIFIuin4t":"DAN-jOpDNz4ve9XF9oWQ");
+          i.setAttribute("data-ad-width",m?"320":"728");i.setAttribute("data-ad-height",m?"100":"90");s.appendChild(i);})();
+        </script>
       </div>
 
     </div>
