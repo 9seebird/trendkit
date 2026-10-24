@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { DM_Sans } from "next/font/google";
 import "../styles/globals.css";
+import { SITE } from "@/lib/site";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -13,10 +14,32 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+// 검색엔진·공유 미리보기용 기본값. 페이지마다 title·description 을 덮어쓴다
+// 사이트 소유 확인 값은 Vercel 환경변수로 (구글 서치 콘솔 / 네이버 서치어드바이저에서 받은 content 값)
 export const metadata: Metadata = {
-  title: "TrendKit — 생산성 도구 모음",
-  description: "설치 없이 브라우저에서 바로 사용하는 업무 자동화 도구들",
+  metadataBase: new URL(SITE.url),
+  title: { default: SITE.title, template: "%s | TrendKit" },
+  description: SITE.description,
+  keywords: SITE.keywords,
+  applicationName: SITE.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "/",
+    siteName: SITE.name,
+    title: SITE.title,
+    description: SITE.description,
+  },
+  twitter: { card: "summary_large_image", title: SITE.title, description: SITE.description },
+  robots: { index: true, follow: true },
   icons: { icon: "/favicon.ico" },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
+      ? { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }
+      : undefined,
+  },
 };
 
 const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;

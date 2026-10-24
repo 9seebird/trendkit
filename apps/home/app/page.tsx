@@ -5,6 +5,26 @@ import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import AdSenseAd from "./_components/AdSenseAd";
 import { URLS } from "@/lib/urls";
+import { SITE, SITE_TOOLS } from "@/lib/site";
+
+// 구조화 데이터 — 검색 결과에서 사이트 이름·도구 목록을 알아보게 (schema.org)
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", name: SITE.name, url: SITE.url, inLanguage: "ko-KR", description: SITE.description },
+    {
+      "@type": "ItemList",
+      name: "TrendKit 도구 모음",
+      itemListElement: SITE_TOOLS.map((t, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: { "@type": "WebApplication", name: t.name, url: t.url, description: t.desc,
+                applicationCategory: "UtilitiesApplication", operatingSystem: "Web",
+                offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } },
+      })),
+    },
+  ],
+};
 
 const HERO_TOOLS = [
   {
@@ -61,6 +81,7 @@ const HERO_TOOLS = [
 export default function HomePage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
       <Header />
       <main>
         {/* ══ HERO ══ */}

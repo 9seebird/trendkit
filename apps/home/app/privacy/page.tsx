@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "개인정보처리방침",
+  description: "TrendKit 개인정보처리방침",
+  alternates: { canonical: "/privacy" },
+  openGraph: { title: "개인정보처리방침 | TrendKit", description: "TrendKit 개인정보처리방침", url: "/privacy" },
+};
+
 export default function PrivacyPage() {
   return (
     <main

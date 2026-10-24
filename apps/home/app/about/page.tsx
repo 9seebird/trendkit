@@ -1,6 +1,15 @@
 // about/page.tsx — card/badge 클래스 활용, 인라인 스타일 최소화
+import type { Metadata } from "next";
+
 import Header from "../_components/Header";
 import Footer from "../_components/Footer";
+
+export const metadata: Metadata = {
+  title: "소개",
+  description: "TrendKit은 설치 없이 브라우저에서 바로 쓰는 무료 생산성 도구를 만듭니다. 만든 이유와 앞으로의 계획을 소개합니다.",
+  alternates: { canonical: "/about" },
+  openGraph: { title: "소개 | TrendKit", description: "TrendKit은 설치 없이 브라우저에서 바로 쓰는 무료 생산성 도구를 만듭니다. 만든 이유와 앞으로의 계획을 소개합니다.", url: "/about" },
+};
 
 const ABOUT_CONTENT = {
   headline: "반복 업무를 없애는\n도구를 만듭니다",

@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
+
 import Link from "next/link";
 import Header from "../_components/Header";
 import Footer from "../_components/Footer";
 import FAQAccordion from "@/app/_components/FAQAccordion";
 import AdSenseAd from "@/app/_components/AdSenseAd";
 import { URLS } from "@/lib/urls";
+
+export const metadata: Metadata = {
+  title: "서비스 — 엑셀 병합·PDF 편집·워드클라우드·키워드 트렌드·여행 코스",
+  description: "TrendKit의 무료 온라인 도구: 엑셀 파일 병합, PDF 편집·병합, 뉴스 워드클라우드와 키워드 트렌드, 말로 찾는 반나절 여행 코스.",
+  alternates: { canonical: "/services" },
+  openGraph: { title: "서비스 — 엑셀 병합·PDF 편집·워드클라우드·키워드 트렌드·여행 코스 | TrendKit", description: "TrendKit의 무료 온라인 도구: 엑셀 파일 병합, PDF 편집·병합, 뉴스 워드클라우드와 키워드 트렌드, 말로 찾는 반나절 여행 코스.", url: "/services" },
+};
 
 /* ============================================================
    1. 서비스 카드 데이터

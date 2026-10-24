@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "이용약관",
+  description: "TrendKit 서비스 이용약관",
+  alternates: { canonical: "/terms" },
+  openGraph: { title: "이용약관 | TrendKit", description: "TrendKit 서비스 이용약관", url: "/terms" },
+};
+
 export default function TermsPage() {
   return (
     <main
