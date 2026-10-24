@@ -36,9 +36,11 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.ico" },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
-    other: process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
-      ? { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }
-      : undefined,
+    // 네이버 서치어드바이저 소유 확인 (trendkit.app). 공개되는 값이라 코드에 둔다
+    other: {
+      "naver-site-verification":
+        process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION || "36011dc835246b43673663994d590688e1f57687",
+    },
   },
 };
 
