@@ -4,6 +4,7 @@ import Link from "next/link";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import AdSenseAd from "./_components/AdSenseAd";
+import AdFitAd from "./_components/AdFitAd";
 import { SITE } from "@/lib/site";
 import { CATALOG, FEATURED } from "@/lib/catalog";
 import CatalogGrid from "./_components/CatalogGrid";
@@ -231,6 +232,8 @@ export default function HomePage() {
         </section>
         <div className="container-main home-footer-ad">
           <AdSenseAd label="홈 하단 광고" />
+          {/* 카카오 애드핏 (매체: trendkit) */}
+          <AdFitAd label="홈 하단 광고" style={{ margin: "24px auto" }} />
         </div>
       </main>
       <Footer />

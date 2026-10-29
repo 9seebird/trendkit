@@ -35,8 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`} />
           </>
         ) : null}
-        {/* Kakao AdFit SDK */}
-        <script async src="//t1.kakaocdn.net/kas/static/ba.min.js" />
+        {/* 카카오 애드핏 스크립트는 광고 칸(AdSenseAd.tsx)이 화면 크기에 맞게 단위를 정한 뒤 불러온다 */}
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {children}
