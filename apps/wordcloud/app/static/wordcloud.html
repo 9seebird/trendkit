@@ -263,8 +263,8 @@
       <ins class="kakao_ad_area" data-ad-unit="DAN-DexcSXBTehZhibrX" data-ad-width="728" data-ad-height="90"></ins>
       <script>
         // 광고 칸은 HTML 에 PC 단위(728x90)로 바로 둔다 — 애드핏 매체 심사가 설치를 알아볼 수 있게.
-        // 폰이면 애드핏 스크립트(맨 아래)가 읽기 전에 모바일 단위(320x100)로 바꾼다.
-        (function(){var i=document.currentScript.previousElementSibling;if(window.matchMedia("(max-width: 767px)").matches){i.setAttribute("data-ad-unit","DAN-04HPSACujPKdO2DA");i.setAttribute("data-ad-width","320");i.setAttribute("data-ad-height","100");}})();
+        // 광고 칸이 728px 보다 좁으면(폰·태블릿 세로) 애드핏 스크립트(맨 아래)가 읽기 전에 모바일 단위(320x100)로 바꾼다 — 728 광고가 잘리지 않게.
+        (function(){var i=document.currentScript.previousElementSibling;var w=i.parentElement.clientWidth||window.innerWidth;if(w<728){i.style.width="320px";i.style.height="100px";i.setAttribute("data-ad-unit","DAN-04HPSACujPKdO2DA");i.setAttribute("data-ad-width","320");i.setAttribute("data-ad-height","100");}})();
       </script>
     </div>
 
