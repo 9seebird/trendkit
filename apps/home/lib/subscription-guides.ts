@@ -1,6 +1,15 @@
+export const SUBSCRIPTION_CATEGORIES = {
+  video: "영상",
+  music: "음악",
+  membership: "멤버십",
+  work: "업무·AI·저장 공간",
+  game: "게임",
+} as const;
+
 export type SubscriptionGuide = {
   id: string;
   name: string;
+  category: keyof typeof SUBSCRIPTION_CATEGORIES;
   aliases: string[];
   manageUrl: string;
   helpUrl: string;
@@ -13,6 +22,7 @@ export type SubscriptionGuide = {
 export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   {
     id: "tving",
+    category: "video",
     name: "티빙",
     aliases: ["TVING", "TVING 이용권"],
     manageUrl: "https://www.tving.com/",
@@ -28,6 +38,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "wavve",
+    category: "video",
     name: "웨이브",
     aliases: ["Wavve", "웨이브 이용권", "WAVVE"],
     manageUrl: "https://www.wavve.com/",
@@ -43,6 +54,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "chatgpt",
+    category: "work",
     name: "ChatGPT",
     aliases: ["챗GPT", "챗지피티", "OpenAI", "ChatGPT Plus", "ChatGPT Pro"],
     manageUrl: "https://chatgpt.com/",
@@ -57,6 +69,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "youtube-premium",
+    category: "video",
     name: "YouTube Premium",
     aliases: ["유튜브 프리미엄", "유튜브뮤직", "YouTube", "YouTube Music Premium", "유튜브 뮤직 프리미엄"],
     manageUrl: "https://www.youtube.com/paid_memberships",
@@ -71,6 +84,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "netflix",
+    category: "video",
     name: "Netflix",
     aliases: ["넷플릭스"],
     manageUrl: "https://www.netflix.com/cancelplan",
@@ -86,6 +100,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "spotify",
+    category: "music",
     name: "Spotify Premium",
     aliases: ["스포티파이", "Spotify"],
     manageUrl: "https://www.spotify.com/account/overview/",
@@ -101,6 +116,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "disney-plus",
+    category: "video",
     name: "Disney+",
     aliases: ["디즈니+", "디즈니플러스", "Disney Plus"],
     manageUrl: "https://www.disneyplus.com/account",
@@ -116,6 +132,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "watcha",
+    category: "video",
     name: "왓챠",
     aliases: ["WATCHA", "Watcha"],
     manageUrl: "https://watcha.com/",
@@ -131,6 +148,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "coupang-wow",
+    category: "membership",
     name: "쿠팡 와우 멤버십",
     aliases: ["와우 멤버십", "쿠팡플레이", "쿠팡 플레이", "Coupang Wow"],
     manageUrl: "https://www.coupang.com/",
@@ -147,6 +165,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "naver-plus",
+    category: "membership",
     name: "네이버플러스 멤버십",
     aliases: ["네이버 플러스", "Naver Plus", "N+ 멤버십"],
     manageUrl: "https://help.naver.com/service/23168/contents/13774?lang=ko",
@@ -161,6 +180,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "apple-music",
+    category: "music",
     name: "Apple Music",
     aliases: ["애플뮤직", "Apple Music 구독"],
     manageUrl: "https://music.apple.com/kr/",
@@ -176,6 +196,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "apple-tv-plus",
+    category: "video",
     name: "Apple TV+",
     aliases: ["애플TV+", "Apple TV Plus", "애플 TV 플러스"],
     manageUrl: "https://tv.apple.com/",
@@ -190,6 +211,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "apple-one",
+    category: "membership",
     name: "Apple One",
     aliases: ["애플원"],
     manageUrl: "https://account.apple.com/account/manage/section/subscriptions",
@@ -204,6 +226,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "icloud-plus",
+    category: "work",
     name: "iCloud+",
     aliases: ["아이클라우드+", "iCloud Plus", "아이클라우드 저장공간"],
     manageUrl: "https://account.apple.com/account/manage/section/subscriptions",
@@ -218,6 +241,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "melon",
+    category: "music",
     name: "멜론",
     aliases: ["Melon", "Melon Music"],
     manageUrl: "https://www.melon.com/",
@@ -232,6 +256,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "genie-music",
+    category: "music",
     name: "지니뮤직",
     aliases: ["지니", "Genie Music", "genie"],
     manageUrl: "https://www.genie.co.kr/",
@@ -246,6 +271,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "flo",
+    category: "music",
     name: "FLO",
     aliases: ["플로", "플로 음악"],
     manageUrl: "https://www.music-flo.com/",
@@ -260,6 +286,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "bugs",
+    category: "music",
     name: "벅스",
     aliases: ["Bugs", "Bugs Music"],
     manageUrl: "https://music.bugs.co.kr/",
@@ -274,6 +301,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "google-one",
+    category: "work",
     name: "Google One",
     aliases: ["구글 원", "구글원", "Google 저장공간"],
     manageUrl: "https://one.google.com/settings",
@@ -288,6 +316,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "google-ai-pro",
+    category: "work",
     name: "Google AI Pro",
     aliases: ["구글 AI 프로", "Gemini Advanced", "Google Gemini 구독"],
     manageUrl: "https://one.google.com/settings",
@@ -303,6 +332,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "microsoft-365",
+    category: "work",
     name: "Microsoft 365",
     aliases: ["오피스 365", "Office 365", "Microsoft 365 Personal", "Microsoft 365 Family", "OneDrive 구독"],
     manageUrl: "https://account.microsoft.com/services/microsoft365",
@@ -317,6 +347,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "adobe-creative-cloud",
+    category: "work",
     name: "Adobe Creative Cloud",
     aliases: ["Adobe", "어도비", "포토샵 구독", "Photoshop", "Premiere Pro", "Lightroom"],
     manageUrl: "https://account.adobe.com/plans",
@@ -332,6 +363,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "dropbox",
+    category: "work",
     name: "Dropbox",
     aliases: ["드롭박스", "Dropbox Plus", "Dropbox Professional"],
     manageUrl: "https://www.dropbox.com/account/plan",
@@ -346,6 +378,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "perplexity-pro",
+    category: "work",
     name: "Perplexity Pro",
     aliases: ["퍼플렉시티", "Perplexity"],
     manageUrl: "https://www.perplexity.ai/account",
@@ -360,6 +393,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "playstation-plus",
+    category: "game",
     name: "PlayStation Plus",
     aliases: ["PS Plus", "PS+", "플레이스테이션 플러스", "플스 플러스"],
     manageUrl: "https://www.playstation.com/acct/management/",
@@ -374,6 +408,7 @@ export const SUBSCRIPTION_GUIDES: SubscriptionGuide[] = [
   },
   {
     id: "xbox-game-pass",
+    category: "game",
     name: "Xbox Game Pass",
     aliases: ["Xbox 구독", "엑스박스 게임패스", "Game Pass"],
     manageUrl: "https://account.microsoft.com/services",

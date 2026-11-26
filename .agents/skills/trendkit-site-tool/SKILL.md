@@ -10,7 +10,7 @@ Use this workflow for a new tool served from `trendkit.app/tools/*`.
 ## Map the existing entry points
 
 - `apps/home/lib/tools.ts` holds metadata, search keywords, category, and slug for first-party tools.
-- `apps/home/lib/catalog.ts` combines first-party tools and linked services. The home page shows only the first eight catalog entries, so set `FEATURED_TOOLS` when a new tool should appear there.
+- `apps/home/lib/catalog.ts` combines first-party tools and linked services. Set `CATALOG_ORDER` to change the shared card order. The first four entries appear at the top of the home page, the first eight in its full-view tool grid, and the first six in the footer. The `/tools` page shows all entries.
 - `apps/home/app/tools/<slug>/page.tsx` owns the server-rendered page, metadata, article, and FAQ. Reuse `ToolPage` and `toolMetadata` from `apps/home/app/tools/_components/ToolPage.tsx`.
 - `apps/home/app/tools/<slug>/<Component>.tsx` holds client-side interactions.
 - `apps/home/app/tools/tools.css` contains shared tool styles. Prefix new feature styles to avoid collisions.
@@ -22,14 +22,14 @@ Use this workflow for a new tool served from `trendkit.app/tools/*`.
 1. State the visitor's task and the success state in plain language.
 2. For service policies, verify claims and destination URLs against official provider documentation. Keep links to the source beside the related instructions. Do not claim to read account-specific plans, prices, dates, or states unless the app actually does so.
 3. Add the tool's metadata and Korean search phrases to `apps/home/lib/tools.ts`.
-4. Add a catalog category if the existing groups do not fit. Set a featured order in `apps/home/lib/catalog.ts` when the tool belongs on the home page.
+4. Add a catalog category if the existing groups do not fit. Add the tool key to `CATALOG_ORDER` when it needs a specific position. Tools without an assigned position appear after the ranked entries.
 5. Create the route page and interactive component. Put substantial explanatory text and FAQ in the server-rendered page so search crawlers can read it.
 6. Reuse the shared ad, related-tool, breadcrumb, and footer placement from `ToolPage`.
 7. Update catalog page copy when it would otherwise omit the new tool or misdescribe its behavior.
 
 For subscription cancellation guidance, treat service cancellation and payment-channel cancellation as separate paths. Include App Store, Google Play, direct billing, partner billing, and an unknown-billing path. Make clear that visitors finish cancellation on the provider's site and verify the renewal status there. Keep refunds separate from stopping future renewals.
 
-The service suggestions and curated instructions come from `apps/home/lib/subscription-guides.ts`. Add a canonical name and common Korean/English aliases there; the datalist and matching logic use this registry. Update the subscription tool metadata in `apps/home/app/tools/subscription-cancel/page.tsx` and search keywords in `apps/home/lib/tools.ts` when adding a provider. Confirm each account-management and support link on the provider's official site, and keep trial wording conditional because eligibility and billing dates are account-specific. Names absent from the registry remain typeable and open a user-initiated web search query; the app does not crawl accounts or automatically verify search results. Keep an in-page reminder to confirm that the result belongs to the provider or billing partner.
+The service suggestions and curated instructions come from `apps/home/lib/subscription-guides.ts`. Add a canonical name, category, and common Korean/English aliases there. The service picker in `SubscriptionFinder.tsx` filters the registry by category and by partial names or aliases. Update the subscription tool metadata in `apps/home/app/tools/subscription-cancel/page.tsx` and search keywords in `apps/home/lib/tools.ts` when adding a provider. Confirm each account-management and support link on the provider's official site, and keep trial wording conditional because eligibility and billing dates are account-specific. Names absent from the registry remain typeable and open a user-initiated web search query; the app does not crawl accounts or automatically verify search results. Keep an in-page reminder to confirm that the result belongs to the provider or billing partner.
 
 ## Validate locally
 
@@ -42,6 +42,10 @@ npm run dev --workspace=apps/home
 ```
 
 Open `/tools/<slug>` and check the principal selection flows, provider links, phone-width layout, page title and description, catalog discovery, and sitemap entry. The production build runs Next.js compilation and type validation. Do not add dependencies or edit the lockfile for a tool that can use existing packages.
+
+After changing `CATALOG_ORDER`, check the card order at the top of `/` and under the default tab on `/tools`. Category tabs filter the same ordered list.
+
+On `/tools/subscription-cancel`, open the service list and check that it stays below the input at desktop and phone widths. Select a category, type a Korean alias such as `애플뮤직`, and select the matching service. Try a name outside the registry and check that the web search action appears. Use Tab to reach the category and service buttons, Enter to select, and Escape to close the list.
 
 ## Git and release
 

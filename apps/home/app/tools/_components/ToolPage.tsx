@@ -6,7 +6,7 @@ import Header from "../../_components/Header";
 import Footer from "../../_components/Footer";
 import AdSenseAd from "../../_components/AdSenseAd";
 import { toolBySlug } from "@/lib/tools";
-import { CATALOG_SORTED } from "@/lib/catalog";
+import { CATALOG } from "@/lib/catalog";
 import ToolCard from "../../_components/ToolCard";
 import { SITE } from "@/lib/site";
 
@@ -23,7 +23,7 @@ export default function ToolPage({
   related?: string[];          // 관련 도구 key (사이트 안 도구는 slug, 외부는 pdf·trip 등). 없으면 같은 분류 → 추천 순
 }) {
   const tool = toolBySlug(slug);
-  const others = CATALOG_SORTED.filter((c) => c.key !== slug);
+  const others = CATALOG.filter((c) => c.key !== slug);
   const picked = (related ?? []).map((k) => others.find((c) => c.key === k)).filter((c): c is (typeof others)[number] => !!c);
   // 고른 것 → 같은 분류 → 추천 순으로 4개 (외부 서비스도 섞어 사이트 전체로 이어지게)
   const rel = [...picked, ...others.filter((c) => c.category === tool.group), ...others]

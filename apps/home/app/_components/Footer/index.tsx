@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CATALOG, FEATURED } from "@/lib/catalog";
+import { CATALOG } from "@/lib/catalog";
 
 /* =========================
    링크 데이터
@@ -7,7 +7,7 @@ import { CATALOG, FEATURED } from "@/lib/catalog";
 // 도구는 전부 나열하지 않고 추천 6개 + 전체 보기 (도구가 늘어도 푸터 길이가 그대로)
 const FOOTER_LINKS: Record<string, { label: string; href: string; external?: boolean }[]> = {
   도구: [
-    ...FEATURED.slice(0, 6).map((c) => ({ label: c.name, href: c.href, external: c.external })),
+    ...CATALOG.slice(0, 6).map((c) => ({ label: c.name, href: c.href, external: c.external })),
     { label: `전체 도구 ${CATALOG.length}개 →`, href: "/tools" },
   ],
   회사: [

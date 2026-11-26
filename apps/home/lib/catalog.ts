@@ -16,39 +16,45 @@ export type CatalogItem = {
   category: Category;
   href: string;
   external: boolean;       // 하위 도메인(새 창)
-  featured?: number;       // 홈 첫 화면·푸터에 먼저 보일 순서 (작을수록 앞)
 };
 
 const SERVICES: CatalogItem[] = [
   { key: "pdf", name: "PDF 편집기", short: "PDF 편집·병합, 문서 수정과 이미지 변환", icon: "📄", iconBg: "#fef3c7",
-    category: "문서·파일", href: URLS.pdf, external: true, featured: 1 },
+    category: "문서·파일", href: URLS.pdf, external: true },
   { key: "excel", name: "Excel Smart Merger", short: "여러 엑셀 파일을 컬럼 기준으로 병합하고 바로 다운로드", icon: "📊", iconBg: "#dbeafe",
-    category: "문서·파일", href: URLS.excel, external: true, featured: 4 },
-  { key: "trip", name: "반나절 여행 코스", short: "“비 오는 날 아이랑 갈 만한 곳”처럼 말하면 갈 곳과 근처 반나절 코스를 찾아 줘요", icon: "🧭", iconBg: "#ccfbf1",
-    category: "생활·여행", href: URLS.trip, external: true, featured: 2 },
+    category: "문서·파일", href: URLS.excel, external: true },
+  { key: "trip", name: "반나절 여행 코스", short: "“비 오는 날 아이랑 갈 만한 곳”처럼 말하면 여행지와 주변 반나절 코스를 추천해 드려요", icon: "🧭", iconBg: "#ccfbf1",
+    category: "생활·여행", href: URLS.trip, external: true },
   { key: "wordcloud", name: "워드클라우드 생성기", short: "검색어 기반 뉴스 워드클라우드. 이미지·CSV 다운로드", icon: "☁️", iconBg: "#e0f2fe",
-    category: "분석", href: URLS.wordcloud, external: true, featured: 7 },
+    category: "분석", href: URLS.wordcloud, external: true },
   { key: "trends", name: "키워드 트렌드", short: "오늘 뉴스 키워드 빈도를 차트와 태그 클라우드로", icon: "📈", iconBg: "#dcfce7",
-    category: "분석", href: URLS.trends, external: true, featured: 8 },
+    category: "분석", href: URLS.trends, external: true },
 ];
 
-const FEATURED_TOOLS: Record<string, number> = {
-  "salary-calculator": 3,
-  "character-count": 5,
-  "image-converter": 6,
-  "subscription-cancel": 7,
-};
+// 홈, 전체 도구, 푸터에서 공통으로 쓰는 순서. 목록에 없는 새 도구는 뒤에 표시한다.
+const CATALOG_ORDER = [
+  "trip",
+  "subscription-cancel",
+  "pdf",
+  "salary-calculator",
+  "image-converter",
+  "character-count",
+  "excel",
+  "qr-code",
+  "date-calculator",
+  "annual-leave",
+  "severance-pay",
+  "trends",
+  "wordcloud",
+];
+const catalogRank = new Map(CATALOG_ORDER.map((key, index) => [key, index]));
 
 export const CATALOG: CatalogItem[] = [
   ...SERVICES,
   ...TOOLS.map((t) => ({
     key: t.slug, name: t.name, short: t.short, icon: t.icon, iconBg: t.iconBg, category: t.group,
-    href: `/tools/${t.slug}`, external: false, featured: FEATURED_TOOLS[t.slug],
+    href: `/tools/${t.slug}`, external: false,
   })),
-];
-
-// 추천 순서(featured) 먼저, 나머지는 분류 순
-export const CATALOG_SORTED: CatalogItem[] = [...CATALOG].sort((a, b) =>
-  (a.featured ?? 99) - (b.featured ?? 99) || CATEGORIES.indexOf(a.category) - CATEGORIES.indexOf(b.category));
-
-export const FEATURED = CATALOG_SORTED.filter((c) => c.featured !== undefined);
+].sort((a, b) =>
+  (catalogRank.get(a.key) ?? CATALOG_ORDER.length) - (catalogRank.get(b.key) ?? CATALOG_ORDER.length)
+  || CATEGORIES.indexOf(a.category) - CATEGORIES.indexOf(b.category));

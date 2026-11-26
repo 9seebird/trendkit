@@ -1,14 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import {
   SUBSCRIPTION_BILLING_URLS,
+  SUBSCRIPTION_CATEGORIES,
   SUBSCRIPTION_GUIDES,
   type SubscriptionGuide,
 } from "@/lib/subscription-guides";
 
 type BillingRoute = "direct" | "apple" | "google-play" | "partner" | "unknown";
 type Intent = "trial" | "cancel" | "charged";
+type CategoryFilter = "all" | SubscriptionGuide["category"];
+
+const CATEGORY_FILTERS = [
+  ["all", "전체"],
+  ...Object.entries(SUBSCRIPTION_CATEGORIES),
+] as [CategoryFilter, string][];
 
 const BILLING_OPTIONS: { id: BillingRoute; label: string }[] = [
   { id: "direct", label: "서비스에서 직접 결제" },
@@ -25,18 +32,20 @@ const INTENTS: { id: Intent; label: string }[] = [
 ];
 
 function normalize(value: string) {
-  return value.trim().toLocaleLowerCase().replace(/[\s._-]/g, "");
+  return value.normalize("NFKC").toLowerCase().replace(/[\s._-]/g, "");
+}
+
+function guideNames(guide: SubscriptionGuide) {
+  return [guide.name, ...guide.aliases].map(normalize);
 }
 
 function findGuide(value: string): SubscriptionGuide | undefined {
   const query = normalize(value);
   if (!query) return undefined;
-  return SUBSCRIPTION_GUIDES.find((guide) =>
-    [guide.name, ...guide.aliases].some((alias) => {
-      const normalizedAlias = normalize(alias);
-      return query === normalizedAlias || query.includes(normalizedAlias);
-    }),
-  );
+  const exactMatch = SUBSCRIPTION_GUIDES.find((guide) => guideNames(guide).includes(query));
+  if (exactMatch) return exactMatch;
+  const serviceQuery = query.replace(/(?:구독|이용권|정기결제|자동결제)?(?:해지|취소)(?:하기|방법)?$/, "");
+  return SUBSCRIPTION_GUIDES.find((guide) => guideNames(guide).includes(serviceQuery));
 }
 
 function serviceSearchActions(serviceName: string): { label: string; href: string }[] {
@@ -156,7 +165,16 @@ export default function SubscriptionFinder() {
   const [serviceName, setServiceName] = useState("");
   const [route, setRoute] = useState<BillingRoute>("unknown");
   const [intent, setIntent] = useState<Intent>("cancel");
-  const guide = useMemo(() => findGuide(serviceName), [serviceName]);
+  const [isPickerOpen, setPickerOpen] = useState(false);
+  const [filterByName, setFilterByName] = useState(false);
+  const [category, setCategory] = useState<CategoryFilter>("all");
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const guide = findGuide(serviceName);
+  const query = filterByName ? normalize(serviceName) : "";
+  const suggestions = SUBSCRIPTION_GUIDES.filter((item) => {
+    const matchesCategory = category === "all" || item.category === category;
+    return matchesCategory && (item === guide || guideNames(item).some((name) => name.includes(query)));
+  });
   const details = routeDetails(route, guide, serviceName);
   const displayService = guide?.name ?? (serviceName.trim() || "서비스");
   const title = intent === "trial"
@@ -165,26 +183,117 @@ export default function SubscriptionFinder() {
       ? `${displayService} 해지와 환불 확인`
       : `${displayService} 해지 경로`;
 
+  function chooseService(item: SubscriptionGuide) {
+    setServiceName(item.name);
+    setPickerOpen(false);
+  }
+
+  function openServiceList() {
+    setCategory("all");
+    setFilterByName(false);
+    setPickerOpen(true);
+  }
+
   return (
     <div className="tk-panel sc-panel">
-      <label className="tk-field" htmlFor="subscription-service">
-        <span>서비스 이름</span>
-        <input
-          id="subscription-service"
-          className="tk-input"
-          list="subscription-service-list"
-          value={serviceName}
-          onChange={(event) => setServiceName(event.target.value)}
-          placeholder="예: 티빙, Apple Music, Disney+, ChatGPT"
-          autoComplete="off"
-        />
-        <datalist id="subscription-service-list">
-          {SUBSCRIPTION_GUIDES.map((item) => <option key={item.id} value={item.name} />)}
-        </datalist>
-      </label>
-      <p className="tk-note sc-service-note">
-        서비스 이름만 입력해 주세요. 등록된 서비스는 서비스별 안내를 보여드리고, 목록에 없는 이름은 웹 검색으로 연결합니다. 검색 결과에서 공식 서비스나 실제 결제처의 안내인지 확인해 주세요.
-      </p>
+      <div
+        className="sc-service-picker"
+        onKeyDown={(event) => {
+          if (event.key !== "Escape" || event.nativeEvent.isComposing || !isPickerOpen) return;
+          event.preventDefault();
+          if (event.target instanceof HTMLButtonElement || event.target instanceof HTMLAnchorElement) {
+            toggleRef.current?.focus();
+          }
+          setPickerOpen(false);
+        }}
+      >
+        <label className="tk-label" htmlFor="subscription-service">서비스 이름</label>
+        <div className="sc-service-input">
+          <input
+            id="subscription-service"
+            className="tk-input"
+            value={serviceName}
+            onClick={() => {
+              if (!isPickerOpen) openServiceList();
+            }}
+            onChange={(event) => {
+              setServiceName(event.target.value);
+              setCategory("all");
+              setFilterByName(true);
+              setPickerOpen(true);
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" || event.nativeEvent.isComposing || !isPickerOpen || suggestions.length !== 1) return;
+              event.preventDefault();
+              chooseService(suggestions[0]);
+            }}
+            placeholder="예: 티빙, 애플뮤직"
+            autoComplete="off"
+            aria-describedby="subscription-service-note"
+          />
+          <button
+            ref={toggleRef}
+            className="sc-service-toggle"
+            type="button"
+            aria-expanded={isPickerOpen}
+            aria-controls="subscription-service-list"
+            onClick={() => {
+              if (isPickerOpen) setPickerOpen(false);
+              else openServiceList();
+            }}
+          >
+            서비스 목록
+          </button>
+        </div>
+
+        <div id="subscription-service-list" className="sc-service-list" hidden={!isPickerOpen}>
+          {isPickerOpen && (
+            <>
+              <div className="sc-category-filters" role="group" aria-label="서비스 종류">
+                {CATEGORY_FILTERS.map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={category === value}
+                    onClick={() => setCategory(value)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {suggestions.length ? (
+                <ul key={category} className="sc-service-options" aria-label="서비스 목록">
+                  {suggestions.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        aria-pressed={guide?.id === item.id}
+                        onClick={() => {
+                          toggleRef.current?.focus();
+                          chooseService(item);
+                        }}
+                      >
+                        {item.name}
+                        {guide?.id === item.id && <span aria-hidden="true">✓</span>}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="sc-service-empty">
+                  이 목록에 일치하는 서비스가 없어요.
+                  {serviceSearchActions(serviceName).map(({ label, href }) => (
+                    <a key={href} href={href} target="_blank" rel="noreferrer">{label}</a>
+                  ))}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+        <p id="subscription-service-note" className="tk-note sc-service-note">
+          목록에 없는 서비스도 이름을 입력해 웹에서 해지 안내를 찾을 수 있어요. 검색 결과에서 공식 고객센터인지 확인해 주세요.
+        </p>
+      </div>
 
       <fieldset className="sc-fieldset">
         <legend>어떤 상황인가요?</legend>

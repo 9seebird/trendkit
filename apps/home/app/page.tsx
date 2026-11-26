@@ -6,7 +6,7 @@ import Footer from "./_components/Footer";
 import AdSenseAd from "./_components/AdSenseAd";
 import AdFitAd from "./_components/AdFitAd";
 import { SITE } from "@/lib/site";
-import { CATALOG, FEATURED } from "@/lib/catalog";
+import { CATALOG } from "@/lib/catalog";
 import CatalogGrid from "./_components/CatalogGrid";
 
 // 구조화 데이터 — 검색 결과에서 사이트 이름·도구 목록을 알아보게 (schema.org)
@@ -28,8 +28,8 @@ const JSON_LD = {
   ],
 };
 
-// 첫 화면 오른쪽 카드 — 추천 도구 4개 (lib/catalog.ts 의 featured 순서)
-const HERO_TOOLS = FEATURED.slice(0, 4).map((c) => ({
+// 첫 화면 오른쪽 카드 — 도구 목록의 첫 4개
+const HERO_TOOLS = CATALOG.slice(0, 4).map((c) => ({
   icon: c.icon, iconBg: c.iconBg, name: c.name, desc: c.short, href: c.href,
   status: "live" as const, external: c.external,
 }));
