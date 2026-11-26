@@ -39,7 +39,17 @@ function findGuide(value: string): SubscriptionGuide | undefined {
   );
 }
 
-function routeDetails(route: BillingRoute, guide?: SubscriptionGuide) {
+function serviceSearchActions(serviceName: string): { label: string; href: string }[] {
+  const query = serviceName.trim();
+  if (!query) return [];
+  const search = `${query} 공식 고객센터 구독 해지 자동결제 취소`;
+  return [{
+    label: "웹에서 해지 안내 검색",
+    href: `https://www.google.com/search?q=${encodeURIComponent(search)}`,
+  }];
+}
+
+function routeDetails(route: BillingRoute, guide: SubscriptionGuide | undefined, serviceName: string) {
   if (route === "direct" && !guide) {
     return {
       title: "서비스 계정에서 구독을 관리하세요",
@@ -49,7 +59,7 @@ function routeDetails(route: BillingRoute, guide?: SubscriptionGuide) {
         "서비스 계정의 결제 또는 멤버십 메뉴에서 다음 결제일과 해지 옵션을 찾습니다.",
         "취소 확인 화면까지 진행하고 갱신 중지 상태를 확인합니다.",
       ],
-      actions: [],
+      actions: serviceSearchActions(serviceName),
     };
   }
 
@@ -94,7 +104,9 @@ function routeDetails(route: BillingRoute, guide?: SubscriptionGuide) {
         "그 회사의 앱이나 웹사이트에서 부가서비스·구독 메뉴를 엽니다.",
         "해지 완료 화면이나 확인 문자를 보관하고 다음 청구가 중지됐는지 확인합니다.",
       ],
-      actions: guide ? [{ label: guide.helpLabel, href: guide.helpUrl }] : [],
+      actions: guide
+        ? [{ label: guide.helpLabel, href: guide.helpUrl }]
+        : serviceSearchActions(serviceName),
     };
   }
 
@@ -111,6 +123,7 @@ function routeDetails(route: BillingRoute, guide?: SubscriptionGuide) {
         { label: "Apple 구독 목록", href: SUBSCRIPTION_BILLING_URLS.apple },
         { label: "Google Play 구독 목록", href: SUBSCRIPTION_BILLING_URLS.googlePlay },
         ...(guide ? [{ label: `${guide.name} 공식 안내`, href: guide.helpUrl }] : []),
+        ...(!guide ? serviceSearchActions(serviceName) : []),
       ],
     };
   }
@@ -135,7 +148,7 @@ function routeDetails(route: BillingRoute, guide?: SubscriptionGuide) {
       "계정·프로필에서 멤버십, 요금제, 구독 또는 결제 메뉴를 엽니다.",
       "해지 확인 화면까지 진행한 뒤 다음 결제 중지 상태를 확인합니다.",
     ],
-    actions: [],
+    actions: serviceSearchActions(serviceName),
   };
 }
 
@@ -144,7 +157,7 @@ export default function SubscriptionFinder() {
   const [route, setRoute] = useState<BillingRoute>("unknown");
   const [intent, setIntent] = useState<Intent>("cancel");
   const guide = useMemo(() => findGuide(serviceName), [serviceName]);
-  const details = routeDetails(route, guide);
+  const details = routeDetails(route, guide, serviceName);
   const displayService = guide?.name ?? (serviceName.trim() || "서비스");
   const title = intent === "trial"
     ? `${displayService} 무료 체험 확인`
@@ -162,13 +175,16 @@ export default function SubscriptionFinder() {
           list="subscription-service-list"
           value={serviceName}
           onChange={(event) => setServiceName(event.target.value)}
-          placeholder="예: 넷플릭스, YouTube Premium, ChatGPT"
+          placeholder="예: 티빙, Apple Music, Disney+, ChatGPT"
           autoComplete="off"
         />
         <datalist id="subscription-service-list">
           {SUBSCRIPTION_GUIDES.map((item) => <option key={item.id} value={item.name} />)}
         </datalist>
       </label>
+      <p className="tk-note sc-service-note">
+        서비스 이름만 입력해 주세요. 등록된 서비스는 서비스별 안내를 보여드리고, 목록에 없는 이름은 웹 검색으로 연결합니다. 검색 결과에서 공식 서비스나 실제 결제처의 안내인지 확인해 주세요.
+      </p>
 
       <fieldset className="sc-fieldset">
         <legend>어떤 상황인가요?</legend>

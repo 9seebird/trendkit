@@ -29,6 +29,8 @@ Use this workflow for a new tool served from `trendkit.app/tools/*`.
 
 For subscription cancellation guidance, treat service cancellation and payment-channel cancellation as separate paths. Include App Store, Google Play, direct billing, partner billing, and an unknown-billing path. Make clear that visitors finish cancellation on the provider's site and verify the renewal status there. Keep refunds separate from stopping future renewals.
 
+The service suggestions and curated instructions come from `apps/home/lib/subscription-guides.ts`. Add a canonical name and common Korean/English aliases there; the datalist and matching logic use this registry. Update the subscription tool metadata in `apps/home/app/tools/subscription-cancel/page.tsx` and search keywords in `apps/home/lib/tools.ts` when adding a provider. Confirm each account-management and support link on the provider's official site, and keep trial wording conditional because eligibility and billing dates are account-specific. Names absent from the registry remain typeable and open a user-initiated web search query; the app does not crawl accounts or automatically verify search results. Keep an in-page reminder to confirm that the result belongs to the provider or billing partner.
+
 ## Validate locally
 
 From the repository root, run:
@@ -43,4 +45,4 @@ Open `/tools/<slug>` and check the principal selection flows, provider links, ph
 
 ## Git and release
 
-Work on a feature branch. Leave commits, pushes to GitHub, and production deployment to the user unless the user explicitly asks for those actions. When asked for next steps, provide commands from the repository root and keep Git publication before the user's hosting deployment step.
+Follow the user's branch preference. If the user has asked to work directly on `main`, stay on `main`; otherwise use a feature branch. Leave commits, pushes to GitHub, and production deployment to the user unless the user explicitly asks for those actions. When asked for next steps, provide commands from the repository root and keep Git publication before the user's hosting deployment step.
