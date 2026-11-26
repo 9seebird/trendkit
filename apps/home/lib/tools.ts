@@ -64,6 +64,22 @@ export const TOOLS: ToolInfo[] = [
     icon: "🔳", iconBg: "#f1f5f9", group: "생활·여행",
     keywords: ["QR코드 만들기", "QR 코드 생성", "와이파이 QR코드", "무료 QR코드"],
   },
+  {
+    slug: "subscription-cancel",
+    name: "구독 해지 찾기",
+    short: "무료 체험 자동 결제 조건을 확인하고 서비스별 공식 구독 취소 경로 찾기",
+    icon: "🔎", iconBg: "#dbeafe", group: "구독·결제",
+    keywords: [
+      "구독 해지",
+      "구독 취소",
+      "자동 결제 해지",
+      "무료 체험 자동 결제",
+      "넷플릭스 해지",
+      "유튜브 프리미엄 해지",
+      "챗GPT 구독 취소",
+      "스포티파이 해지",
+    ],
+  },
 ];
 
 export const toolBySlug = (slug: string) => TOOLS.find((t) => t.slug === slug)!;

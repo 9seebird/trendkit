@@ -4,7 +4,7 @@
 import { URLS } from "./urls";
 import { TOOLS } from "./tools";
 
-export const CATEGORIES = ["문서·파일", "계산기", "분석", "생활·여행"] as const;
+export const CATEGORIES = ["문서·파일", "계산기", "분석", "생활·여행", "구독·결제"] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export type CatalogItem = {
@@ -32,7 +32,12 @@ const SERVICES: CatalogItem[] = [
     category: "분석", href: URLS.trends, external: true, featured: 8 },
 ];
 
-const FEATURED_TOOLS: Record<string, number> = { "salary-calculator": 3, "character-count": 5, "image-converter": 6 };
+const FEATURED_TOOLS: Record<string, number> = {
+  "salary-calculator": 3,
+  "character-count": 5,
+  "image-converter": 6,
+  "subscription-cancel": 7,
+};
 
 export const CATALOG: CatalogItem[] = [
   ...SERVICES,
